@@ -1,15 +1,24 @@
 <template>
   <div id="app">
-     hello var
+    <m-header></m-header>
+    <m-tab></m-tab>
+    <router-view></router-view>
   </div>
 </template>
 
-<style lang="less">
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #fff;
+<script>
+import MHeader from "components/m-header/header";
+import MTab from "components/m-tab/tab";
+
+export default {
+   components:{
+     MHeader,
+     MTab
+  }
 }
+
+</script>
+
+<style scoped>
+
 </style>

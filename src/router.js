@@ -1,25 +1,40 @@
-// import Vue from 'vue'
-// import Router from 'vue-router'
-// import Home from './views/Home.vue'
-//
-// Vue.use(Router)
-//
-// export default new Router({
-//   mode: 'history',
-//   base: process.env.BASE_URL,
-//   routes: [
-//     {
-//       path: '/',
-//       name: 'home',
-//       component: Home
-//     },
-//     {
-//       path: '/about',
-//       name: 'about',
-//       // route level code-splitting
-//       // this generates a separate chunk (about.[hash].js) for this route
-//       // which is lazy-loaded when the route is visited.
-//       component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
-//     }
-//   ]
-// })
+import Vue from 'vue'
+import Router from 'vue-router'
+import Recommend from 'components/m-recommend/recommend'
+import Singer from 'components/m-singer/singer'
+import Rank from 'components/m-rank/rank'
+import Search from 'components/m-search/search'
+
+Vue.use(Router)
+
+export default new Router({
+	mode: 'history',
+	routes: [{
+		  path:'/',
+			redirect:'/recommend'
+	}, {
+			path: '/recommend',
+			component: Recommend
+		},
+		{
+			path: '/singer',
+			component: Singer
+		},
+		{
+			path: '/rank',
+			component: Rank
+		},
+		{
+			path: '/search',
+			component: Search
+		}
+		// {
+		//   path: '/about',
+		//   name: 'about',
+		//   // route level code-splitting
+		//   // this generates a separate chunk (about.[hash].js) for this route
+		//   // which is lazy-loaded when the route is visited.
+		//   component: () => import(/* webpackChunkName: "about" */ './views/About.vue')
+		// }
+	]
+})
