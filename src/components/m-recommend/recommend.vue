@@ -68,7 +68,7 @@
       </div>
       <!-- loading 组件 -->
       <div class="loading-container">
-
+        <m-loadding v-show="!lists.length || !recommends.length"></m-loadding>
       </div>
     </m-scroll>
     <router-view></router-view>
@@ -77,6 +77,7 @@
 
 <script>
 import MScroll from "base/scroll/scroll";
+import MLoadding from "base/loadding/loadding";
 import { getRecommend, getDiscList } from "api/recommend";
 import { ERROR_OK } from "api/config";
 import MSlider from "base/slider/slider";
@@ -122,7 +123,8 @@ export default {
   },
   components: {
     MSlider,
-    MScroll
+    MScroll,
+    MLoadding
   }
 };
 </script>
