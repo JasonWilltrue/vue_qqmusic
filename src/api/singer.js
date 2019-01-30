@@ -8,7 +8,7 @@ import axios from 'axios'
 
 /**
  * jsonp 抓取歌手页数据
- * 接口：https: //c.y.qq.com/v8/fcg-bin/v8.fcg
+ * 接口：https:   //c.y.qq.com/v8/fcg-bin/v8.fcg
  */
 export function getSingerList() {
   let url  = 'https://c.y.qq.com/v8/fcg-bin/v8.fcg'

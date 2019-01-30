@@ -3,8 +3,11 @@
     class = "singer"
     ref   = "singerRef"
   >
-    <router-view></router-view>
-
+    <m-listview
+        ref = "scroll"
+      :data = "singerList"
+    >
+    </m-listview>
   </div>
 </template>
 
@@ -13,6 +16,12 @@ import MScroll from "base/scroll/scroll";
 import MLoadding from "base/loadding/loadding";
 import { getSingerList } from "api/singer";
 import { ERROR_OK } from "api/config";
+import { createSinger } from "common/js/singerClass";
+import MListview from "base/listview/listview";
+
+const HOT_TITLE = "热门";
+const HOT_NUM   = 10;
+
 export default {
   name: "singer",
   data() {
@@ -27,11 +36,54 @@ export default {
     _getSingerList() {
       getSingerList().then(res => {
         if (res.code == ERROR_OK) {
-          console.log(res.data);
-          this.singerList = res.data.list;
+          this.singerList = this._formatSingers(res.data.list);
         }
       });
+    },
+    // 重组 res.data.list 数据
+    _formatSingers(list) {
+      let map = {
+        hot: {
+          title: HOT_TITLE,
+          items: []
+        }
+      };
+      //填充歌手数据
+      list.forEach((item, index) => {
+        if (index < HOT_NUM) {
+          map.hot.items.push(createSinger(item));
+        }
+        let key = item.Findex;
+        if (!map[key]) {
+          map[key] = {
+            title: key,
+            items: []
+          };
+        }
+        //填充歌手到字母数据
+        map[key].items.push(createSinger(item));
+      });
+
+      //有序列表  处理map
+      let hot = [];
+      let ret = [];
+      for (const key in map) {
+        let val = map[key];
+        if (val.title.match(/[a-zA-Z]/)) {
+          ret.push(val);
+        } else if (val.title === "热门") {
+          hot.push(val);
+        }
+      }
+      //字母排序方法
+      ret.sort((a, b) => {
+        return a.title.charCodeAt(0) - b.title.charCodeAt(0);
+      });
+      return [...hot, ...ret];
     }
+  },
+  components: {
+    MListview
   }
 };
 </script>
