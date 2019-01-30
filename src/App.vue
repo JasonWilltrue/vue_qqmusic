@@ -2,7 +2,10 @@
   <div id="app">
     <m-header></m-header>
     <m-tab></m-tab>
-    <router-view></router-view>
+    <!-- 把dom缓存到内存中优化体验 -->
+    <keep-alive>
+      <router-view></router-view>
+    </keep-alive>
   </div>
 </template>
 
@@ -11,14 +14,12 @@ import MHeader from "components/m-header/header";
 import MTab from "components/m-tab/tab";
 
 export default {
-   components:{
-     MHeader,
-     MTab
+  components: {
+    MHeader,
+    MTab
   }
-}
-
+};
 </script>
 
 <style scoped>
-
 </style>
