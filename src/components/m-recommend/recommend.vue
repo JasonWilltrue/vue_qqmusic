@@ -12,7 +12,6 @@
       :data   = "lists"
     >
       <!--  :data   = "lists"可以写 图片加载慢导致滑动不到底部的问题 -->
-      >
       <div>
         <!-- 轮播图，当请求到 recommends 时才渲染 -->
         <div
@@ -47,10 +46,10 @@
             >
               <div class="icon">
                 <img
-                  :src     = "item.imgurl"
-                    alt    = "img"
-                    width  = "60"
-                    height = "60"
+                  v-lazy = "item.imgurl"
+                  alt    = "img"
+                  width  = "60"
+                  height = "60"
                 >
               </div>
               <div class="text">
