@@ -1,7 +1,6 @@
 <!-- 类电话簿组件 -->
 <template>
   <m-scroll
-      ref   = "scrollRef"
     :data   = "data"
       class = "list-view"
   >
@@ -63,8 +62,8 @@ export default {
 
 .list-view {
   position  : relative;
-  width     : 100%;
   height    : 100%;
+  width     : 100%;
   overflow  : hidden;
   background: @color-background;
   .list-group {

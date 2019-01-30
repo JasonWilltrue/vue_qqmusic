@@ -12,8 +12,6 @@
 </template>
 
 <script>
-import MScroll from "base/scroll/scroll";
-import MLoadding from "base/loadding/loadding";
 import { getSingerList } from "api/singer";
 import { ERROR_OK } from "api/config";
 import { createSinger } from "common/js/singerClass";
@@ -91,7 +89,7 @@ export default {
 <style lang="less" scoped>
 @import "~@/common/less/const.less";
 @import "~@/common/less/mymixin.less";
-.my-singer {
+.singer {
   position: fixed;
   top     : 88px;
   bottom  : 0;
