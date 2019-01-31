@@ -202,6 +202,8 @@ export default {
       let fixedTop = 
         // 判断高度差 是否已经碰到
         newVal > 0 && newVal < TITLE_HEIGHT ? newVal - TITLE_HEIGHT : 0;
+      console.log(newVal - TITLE_HEIGHT, this.fixedTop);
+      // 优化dom性能
       if (this.fixedTop === fixedTop) {
         return;
       }
