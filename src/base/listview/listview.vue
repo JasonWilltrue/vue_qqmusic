@@ -50,13 +50,21 @@
         </li>
       </ul>
     </div>
+    <!-- 滚动固定标题实现 -->
+    <div
+      ref    = "fixedTitleRef"
+      v-show = "fixedTitle"
+      class  = "list-fixed"
+    >
+      <h1 class="fixed-title">{{ fixedTitle }}</h1>
+    </div>
     <!-- loading 组件 -->
-    <!-- <div
+    <div
       v-show = "!data.length"
       class  = "loading-container"
     >
       <m-loadding></m-loadding>
-    </div> -->
+    </div>
   </m-scroll>
 </template>
 
@@ -83,7 +91,7 @@ export default {
     return {
       scrollY     : -1,   //初始y值
       currentIndex: 0,    //当前值
-      // 标题上推y值（热门标题 - A 标题）
+      // 标题上推y值（热门标题 - A 标题的差值）
       diff: -1
     };
   },
@@ -98,6 +106,14 @@ export default {
       return this.data.map(item => {
         return item.title.substr(0, 1);
       });
+    },
+    fixedTitle() {
+      if (this.scrollY > 0) {
+        return "";
+      }
+      return this.data[this.currentIndex]
+        ? this.data[this.currentIndex].title
+        :  "";
     }
   },
   methods: {
@@ -151,7 +167,6 @@ export default {
         height += list[i].clientHeight;
         this.leftListHeight.push(height);
       }
-      console.log(this.leftListHeight);
     }
   },
   watch: {
@@ -175,12 +190,23 @@ export default {
         if (-newY >= height1 && -newY < height2) {
           this.currentIndex = i;
           this.diff         = height2 + newY;
+          console.log("差距：" + this.diff); //刚好等于30高度的时候碰到
           return;
         }
       }
       // 当滚动到底部，且-newY大于最后一个元素的上限（leftListHeight.length实际就是多一个从0计数的）
       this.currentIndex = leftListHeight.length - 2;
       console.log("当前区间：" + this.currentIndex);
+    },
+    diff(newVal) {
+      let fixedTop = 
+        // 判断高度差 是否已经碰到
+        newVal > 0 && newVal < TITLE_HEIGHT ? newVal - TITLE_HEIGHT : 0;
+      if (this.fixedTop === fixedTop) {
+        return;
+      }
+      this.fixedTop                            = fixedTop;
+      this.$refs.fixedTitleRef.style.transform = `translate3d(0,${fixedTop}px,0)`;
     }
   }
 };
@@ -242,6 +268,26 @@ export default {
         color: @color-theme;
       }
     }
+  }
+  .list-fixed {
+    position  : absolute;
+    top       : -1px;
+    left      : 0;
+    width     : 100%;
+    background: @color-highlight-background;
+    .fixed-title {
+      height      : 30px;
+      line-height : 30px;
+      padding-left: 20px;
+      font-size   : @font-size-small;
+      color       : @color-text-l;
+    }
+  }
+  .loading-container {
+    position : absolute;
+    top      : 50%;
+    width    : 100%;
+    transform: translateY(-50%);
   }
 }
 </style>
