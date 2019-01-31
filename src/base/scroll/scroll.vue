@@ -2,7 +2,7 @@
  * @Author      : Jerrychan
  * @Date        : 2019-01-30 14: 05: 28
  * @LastEditors : Jerrychan
- * @LastEditTime: 2019-01-30 14: 30: 33
+ * @LastEditTime: 2019-01-31 09: 27: 18
  * @Description : 抽象的滚动组件
  -->
 <template>
@@ -88,6 +88,9 @@ export default {
     },
     scrollTo() {
       this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments);
+    },
+    scrollToElement() {
+      this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments);
     }
   },
   watch: {
