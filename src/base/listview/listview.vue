@@ -1,9 +1,12 @@
 <!-- 类电话簿组件 -->
 <template>
   <m-scroll
-    :data   = "data"
-      class = "list-view"
-      ref   = "listview"
+    :data         = "data"
+      class       = "list-view"
+      ref         = "listview"
+    :listenScroll = "listenScroll"
+    :probeType    = "probeType"
+      @scroll     = "scroll"
   >
     <!-- 左侧歌手列表 -->
     <ul>
@@ -41,6 +44,7 @@
           :key        = "index"
           :data-index = "index"
             class     = "item"
+          :class      = "{'current':currentIndex === index}"
         >
           {{ item }}
         </li>
@@ -67,13 +71,21 @@ const TITLE_HEIGHT         = 29;
 export default {
   created() {
     this.touch          = {};
-    this.listenScroll   = true;
+    this.listenScroll   = true;  //开启滚动监听
     this.leftListHeight = [];
     this.probeType      = 3;     // better-scroll 滚动组件 不截留
   },
   components: {
     MScroll,
     MLoadding
+  },
+  data() {
+    return {
+      scrollY     : -1,   //初始y值
+      currentIndex: 0,    //当前值
+      // 标题上推y值（热门标题 - A 标题）
+      diff: -1
+    };
   },
   props: {
     data: {
@@ -96,8 +108,7 @@ export default {
           this.touch.y1          = nowTouch.pageY;
       let activeIndex            = getData(e.target, "index");
           this.touch.activeIndex = activeIndex;
-
-      console.log("下标" + activeIndex);
+      // console.log("下标" + activeIndex);
       this._scrollTo(activeIndex);
     },
     //滑动右侧 左侧联动
@@ -108,8 +119,12 @@ export default {
       //2次点击y轴的偏差
       let offset          = Math.floor((delta / RIGHT_ONEWORD_HEIGHT) | 0);
       let activeMoveIndex = Number(this.touch.activeIndex) + offset;
-      console.log("滑动小标" + activeMoveIndex);
+      // console.log("滑动小标" + activeMoveIndex);
       this._scrollTo(activeMoveIndex);
+    },
+    scroll(pos) {
+      // 实时获取y轴位置
+      this.scrollY = pos.y;
     },
     _scrollTo(index) {
       if (!index) {
@@ -121,6 +136,49 @@ export default {
       //   index = this.leftListHeight.length - 2;
       // }
       this.$refs.listview.scrollToElement(this.$refs.listgroup[index], 400); //第二个参数是滚动动画时间
+    },
+    // 计算 leftListHeight 的高度
+    _caclHeight() {
+      // 初始化
+      let height              = 0;
+          this.leftListHeight = [];
+      this.leftListHeight.push(height);
+
+      let list = this.$refs.listgroup;
+      for (let i = 0; i < list.length; i++) {
+        height += list[i].clientHeight;
+        this.leftListHeight.push(height);
+      }
+      console.log(this.leftListHeight);
+    }
+  },
+  watch: {
+    data() {
+      setTimeout(() => {
+        this._caclHeight();
+      }, 20);
+    },
+    scrollY(newY) {
+      const leftListHeight = this.leftListHeight;
+      // 当滚动到顶部，newY > 0
+      if (newY > 0) {
+        this.currentIndex = 0;
+        return;
+      }
+      // 在中间部分滚动
+      for (let i = 0; i < leftListHeight.length - 1; i++) {
+        let height1 = leftListHeight[i];
+        let height2 = leftListHeight[i + 1];
+        // 大于前一个高度且小于后一个高度就表示在这个后一个区间范围内
+        if (-newY >= height1 && -newY < height2) {
+          this.currentIndex = i;
+          this.diff         = height2 + newY;
+          return;
+        }
+      }
+      // 当滚动到底部，且-newY大于最后一个元素的上限
+      this.currentIndex = leftListHeight.length - 2;
+      console.log("当前区间：" + this.currentIndex);
     }
   }
 };

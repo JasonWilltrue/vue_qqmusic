@@ -2,7 +2,7 @@
  * @Author      : Jerrychan
  * @Date        : 2019-01-30 14: 05: 28
  * @LastEditors : Jerrychan
- * @LastEditTime: 2019-01-31 09: 27: 18
+ * @LastEditTime: 2019-01-31 10: 19: 12
  * @Description : 抽象的滚动组件
  -->
 <template>
@@ -70,10 +70,10 @@ export default {
       });
       //派发监听的滚动位置事件
       if (this.listenScroll) {
-        let me = this;
+        let _that = this;
         this.scroll.on("scroll", pos => {
           //向父组件传值
-          me.$emit("scroll", pos);
+          _that.$emit("scroll", pos);
         });
       }
     },
