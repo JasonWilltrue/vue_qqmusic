@@ -130,11 +130,13 @@ export default {
       if (!index) {
         return;
       }
-      // if (index < 0) {
-      //   index = 0;
-      // } else if (index > this.leftListHeight.length - 2) {
-      //   index = this.leftListHeight.length - 2;
-      // }
+      // 处理滑动情况下滑出边界外index为负值
+      if (index < 0) {
+        index = 0;
+      } else if (index > this.leftListHeight.length - 2) {
+        index = this.leftListHeight.length - 2;
+      }
+      this.currentIndex = Number(index);
       this.$refs.listview.scrollToElement(this.$refs.listgroup[index], 400); //第二个参数是滚动动画时间
     },
     // 计算 leftListHeight 的高度
@@ -176,7 +178,7 @@ export default {
           return;
         }
       }
-      // 当滚动到底部，且-newY大于最后一个元素的上限
+      // 当滚动到底部，且-newY大于最后一个元素的上限（leftListHeight.length实际就是多一个从0计数的）
       this.currentIndex = leftListHeight.length - 2;
       console.log("当前区间：" + this.currentIndex);
     }
