@@ -1,7 +1,10 @@
 <template>
   <div class="music-list">
     <!-- 返回按钮 -->
-    <div class="back">
+    <div
+      class  = "back"
+      @click = "back"
+    >
       <i class="icon-back"></i>
     </div>
     <!-- 顶部歌手名称 -->
@@ -25,7 +28,10 @@
         </div>
       </div>
       <!-- 遮罩层 -->
-      <div class="filter"></div>
+      <div
+        class = "filter"
+        ref   = "filterRef"
+      ></div>
     </div>
     <!-- 推层 -->
     <div
@@ -98,6 +104,10 @@ export default {
     scroll(pos) {
       this.scrollY = pos.y;
       console.log(this.scrollY);
+    },
+    // 返回按钮
+    back() {
+      this.$router.back();
     }
   },
   computed: {
@@ -110,6 +120,8 @@ export default {
     scrollY(newVal) {
       let tranlateY = Math.max(this.minTranslationY, newVal);
       let zIndex    = 0;
+      let scale     = 1;
+      let blur      = 0;
       //设置滚动最大距离
       this.$refs.layerRef.style[
         "transform"
@@ -117,7 +129,13 @@ export default {
       this.$refs.layerRef.style[
         "webkitTransform"
       ] = `translate3d(0 ,${tranlateY}px, 0)`;
-
+      const percent = Math.abs(newVal / this.bgImageHeight);
+      if (newVal > 0) {
+        scale  = 1 + percent;
+        zIndex = 10;
+      } else {
+        blur = Math.min(20 * percent, 20);
+      }
       // 不推到顶，留一部分
       if (newVal < this.minTranslationY) {
                                     zIndex         = 10;
@@ -132,7 +150,11 @@ export default {
         // 显示 随机播放全部 按钮
         this.$refs.playRef.style["display"] = "block";
       }
-      this.$refs.bgImageRef.style["z-index"] = zIndex;
+      this.$refs.bgImageRef.style["z-index"]               = zIndex;
+      this.$refs.bgImageRef.style["transform"]             = `scale(${scale})`;
+      this.$refs.bgImageRef.style["webkitTransform"]       = `scale(${scale})`;
+      this.$refs.filterRef.style ["backdrop-filter"]       = `blur(${blur}px)`;
+      this.$refs.filterRef.style ["webkitBackdrop-filter"] = `blur(${blur}px)`;
     }
   },
   components: {

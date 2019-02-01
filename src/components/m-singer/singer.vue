@@ -1,12 +1,12 @@
 <template>
   <div
-    class = "singer"
-    ref   = "singerRef"
+    class="singer"
+    ref="singerRef"
   >
     <m-listview
-        ref     = "scroll"
-      :data     = "singerList"
-        @select = "selectSinger"
+      ref="scroll"
+      :data="singerList"
+      @select="selectSinger"
     >
     </m-listview>
     <router-view></router-view>
@@ -20,7 +20,7 @@ import { createSinger } from "common/js/singerClass";
 import MListview from "base/listview/listview";
 import { mapMutations } from "vuex";
 const HOT_TITLE = "热门";
-const HOT_NUM   = 10;
+const HOT_NUM = 10;
 
 export default {
   name: "singer",
@@ -32,7 +32,7 @@ export default {
   created() {
     setTimeout(() => {
       this._getSingerList();
-    }, 1000);
+    }, 500);
   },
   methods: {
     selectSinger(item) {
@@ -48,6 +48,7 @@ export default {
         }
       });
     },
+
     // 重组 res.data.list 数据
     _formatSingers(list) {
       let map = {
@@ -105,8 +106,8 @@ export default {
 @import "~@/common/less/mymixin.less";
 .singer {
   position: fixed;
-  top     : 88px;
-  bottom  : 0;
-  width   : 100%;
+  top: 88px;
+  bottom: 0;
+  width: 100%;
 }
 </style>
