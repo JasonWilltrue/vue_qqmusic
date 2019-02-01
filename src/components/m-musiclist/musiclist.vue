@@ -15,7 +15,10 @@
         ref   = "bgImageRef"
     >
       <!-- 随机播放全部 -->
-      <div class="play-wrapper">
+      <div
+        class = "play-wrapper"
+        ref   = "playRef"
+      >
         <div class="play">
           <i class="icon-play"></i>
           <span class="text">随机播放全部</span>
@@ -26,7 +29,7 @@
     </div>
     <!-- 推层 -->
     <div
-      ref   = "bgLayerRef"
+      ref   = "layerRef"
       class = "bg-layer"
     ></div>
     <m-scroll
@@ -35,6 +38,7 @@
       :data          = "songs"
       :probe-type    = "probeType"
       :listen-scroll = "listenScroll"
+        @scroll      = "scroll"
     >
       <div class="song-list-wrapper">
         <song-list
@@ -50,8 +54,15 @@
 import MScroll from "base/scroll/scroll";
 import MLoadding from "base/loadding/loadding";
 import SongList from "base/songlist/songlist";
+const TRANSFORMY_RESERVED = 40;  //顶部高度
 export default {
-  name : "musiclist",
+  name: "musiclist",
+  data() {
+    return {
+      // 推层上移的距离
+      scrollY: -1
+    };
+  },
   props: {
     bgImage: {
       type   : String,
@@ -76,13 +87,52 @@ export default {
     this.listenScroll = true;
   },
   mounted() {
+    //缓存图片高度
+    this.bgImageHeight               = this.$refs.bgImageRef.clientHeight;
+    this.minTranslationY             = -this.bgImageHeight + TRANSFORMY_RESERVED;
     this.$refs.listRef.$el.style.top = `${
       this.$refs.bgImageRef.clientHeight
     }px`;
   },
+  methods: {
+    scroll(pos) {
+      this.scrollY = pos.y;
+      console.log(this.scrollY);
+    }
+  },
   computed: {
     bgStyle() {
       return `background-image:url(${this.bgImage})`;
+    }
+  },
+  watch: {
+    // 推层动画逻辑
+    scrollY(newVal) {
+      let tranlateY = Math.max(this.minTranslationY, newVal);
+      let zIndex    = 0;
+      //设置滚动最大距离
+      this.$refs.layerRef.style[
+        "transform"
+      ] = `translate3d(0 ,${tranlateY}px, 0)`;
+      this.$refs.layerRef.style[
+        "webkitTransform"
+      ] = `translate3d(0 ,${tranlateY}px, 0)`;
+
+      // 不推到顶，留一部分
+      if (newVal < this.minTranslationY) {
+                                    zIndex         = 10;
+        this.$refs.bgImageRef.style["padding-top"] = 0;
+
+        this.$refs.bgImageRef.style["height"] = `${TRANSFORMY_RESERVED}px`;
+        // 隐藏 随机播放全部 按钮
+        this.$refs.playRef.style["display"] = "none";
+      } else {
+        this.$refs.bgImageRef.style["padding-top"] = "70%";
+        this.$refs.bgImageRef.style["height"]      = 0;
+        // 显示 随机播放全部 按钮
+        this.$refs.playRef.style["display"] = "block";
+      }
+      this.$refs.bgImageRef.style["z-index"] = zIndex;
     }
   },
   components: {
@@ -101,8 +151,8 @@ export default {
   z-index   : 100;
   top       : 0;
   left      : 0;
-  right     : 0;
   bottom    : 0;
+  right     : 0;
   background: @color-background;
   .back {
     position: absolute;
@@ -117,11 +167,12 @@ export default {
     }
   }
   .title {
-    position   : absolute;
-    top        : 0;
-    width      : 80%;
-    left       : 10%;
-    z-index    : 40;
+    position: absolute;
+    top     : 0;
+    left    : 10%;
+    z-index : 40;
+    width   : 80%;
+    .no-wrap();
     text-align : center;
     line-height: 40px;
     font-size  : @font-size-large;
@@ -131,10 +182,9 @@ export default {
     position        : relative;
     width           : 100%;
     height          : 0;
-    padding-bottom  : 70%;
+    padding-top     : 70%;
     transform-origin: top;
     background-size : cover;
-    z-index         : 40;
     .play-wrapper {
       position: absolute;
       bottom  : 20px;
@@ -172,7 +222,7 @@ export default {
       background: rgba(7, 17, 27, 0.4);
     }
   }
-  .bg-play {
+  .bg-layer {
     position  : relative;
     height    : 100%;
     background: @color-background;
@@ -186,7 +236,7 @@ export default {
     .song-list-wrapper {
       padding: 20px 30px;
     }
-    .loadding {
+    .loading-container {
       position : absolute;
       width    : 100%;
       top      : 50%;
