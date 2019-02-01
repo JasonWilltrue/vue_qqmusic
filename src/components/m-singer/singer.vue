@@ -4,10 +4,12 @@
     ref   = "singerRef"
   >
     <m-listview
-        ref = "scroll"
-      :data = "singerList"
+        ref     = "scroll"
+      :data     = "singerList"
+        @select = "selectSinger"
     >
     </m-listview>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -33,6 +35,11 @@ export default {
     }, 1000);
   },
   methods: {
+    selectSinger(item) {
+      this.$router.push({
+        path: `/singer/${item.id}`
+      });
+    },
     _getSingerList() {
       getSingerList().then(res => {
         if (res.code == ERROR_OK) {

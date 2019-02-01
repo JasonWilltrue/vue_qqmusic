@@ -19,9 +19,10 @@
         <h2 class="list-group-title">{{ group.title }}</h2>
         <ul>
           <li
-              v-for = "item in group.items"
-              class = "list-group-item"
-            :key    = "item.id"
+              v-for  = "item in group.items"
+              class  = "list-group-item"
+            :key     = "item.id"
+              @click = "selectItem(item)"
           >
             <img
               v-lazy = "item.avatar"
@@ -117,6 +118,10 @@ export default {
     }
   },
   methods: {
+    //点击歌手跳转歌手详情
+    selectItem(item) {
+      this.$emit("select", item);
+    },
     // 点击右侧，左侧联动
     onShortcutTouchstart(e) {
       // 获取点击的第几个元素
