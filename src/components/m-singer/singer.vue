@@ -18,7 +18,7 @@ import { getSingerList } from "api/singer";
 import { ERROR_OK } from "api/config";
 import { createSinger } from "common/js/singerClass";
 import MListview from "base/listview/listview";
-
+import { mapMutations } from "vuex";
 const HOT_TITLE = "热门";
 const HOT_NUM   = 10;
 
@@ -39,6 +39,7 @@ export default {
       this.$router.push({
         path: `/singer/${item.id}`
       });
+      this.setSinger(item);
     },
     _getSingerList() {
       getSingerList().then(res => {
@@ -87,7 +88,11 @@ export default {
         return a.title.charCodeAt(0) - b.title.charCodeAt(0);
       });
       return [...hot, ...ret];
-    }
+    },
+    //vuex处理
+    ...mapMutations({
+      setSinger: "SET_SINGER"
+    })
   },
   components: {
     MListview

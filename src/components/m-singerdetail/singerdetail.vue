@@ -7,8 +7,16 @@
 </template>
 
 <script>
+import { mapGetters } from "vuex";
 export default {
-  name: "singerdetail"
+  name: "singerdetail",
+  created() {
+    console.log(this.singer);
+  },
+  computed: {
+    // vuex, 使用对象展开运算符将 getters 混入 computed 对象中
+    ...mapGetters(["singer"])
+  }
 };
 </script>
 
