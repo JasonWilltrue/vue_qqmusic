@@ -1,21 +1,73 @@
 <template>
   <transition name="slide">
-    <div class="singer-detail">
-      歌手详情
-    </div>
+    <music-list
+      :songs    = "songs"
+      :title    = "title"
+      :bg-image = "bgImage"
+    ></music-list>
   </transition>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
+import { getSingerDetail } from "api/singer";
+import { ERROR_OK } from "api/config";
+import { createSingerSong } from "common/js/song";
+import MusicList from "components/m-musiclist/musiclist";
+
 export default {
   name: "singerdetail",
+  data() {
+    return {
+      songs: []
+    };
+  },
   created() {
     console.log(this.singer);
+    this._getSingerDetail();
+  },
+  methods: {
+    _getSingerDetail() {
+      // 禁止直接刷新详情页（获取不到歌手 id）
+      console.log("刷新执行数2222");
+      if (!this.singer.id) {
+        alert("111111111");
+        // this.$router.push({
+        //   path: "/singer",
+        //   name: "singer"
+        // });
+        return;
+      }
+      getSingerDetail(this.singer.id).then(res => {
+        if (res.code === ERROR_OK) {
+          this.songs = this._formatSongs(res.data.list);
+          console.log(this.songs); //[Song, Song, Song, Song, Song, Song]
+        }
+      });
+    },
+    _formatSongs(list) {
+      let result = [];
+      list.forEach(item => {
+        let { musicData } = item;  //es6结构赋值
+        if (musicData.songid && musicData.albummid) {
+          result.push(createSingerSong(musicData));
+        }
+      });
+      return result;
+    }
   },
   computed: {
+    title() {
+      return this.singer.name;
+    },
+    bgImage() {
+      return this.singer.avatar;
+    },
     // vuex, 使用对象展开运算符将 getters 混入 computed 对象中
     ...mapGetters(["singer"])
+  },
+  components: {
+    MusicList
   }
 };
 </script>
@@ -24,15 +76,6 @@ export default {
 @import "~@/common/less/const.less";
 @import "~@/common/less/mymixin.less";
 
-.singer-detail {
-  position  : fixed;
-  z-index   : 100;
-  top       : 0;
-  left      : 0;
-  right     : 0;
-  bottom    : 0;
-  background: @color-background;
-}
 .slide-enter-active,
 .slide-leave-active {
   transition: all 0.3s;
