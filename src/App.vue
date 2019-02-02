@@ -6,17 +6,19 @@
     <keep-alive>
       <router-view></router-view>
     </keep-alive>
+    <m-player></m-player>
   </div>
 </template>
 
 <script>
 import MHeader from "components/m-header/header";
 import MTab from "components/m-tab/tab";
-
+import MPlayer from "components/m-player/player";
 export default {
   components: {
     MHeader,
-    MTab
+    MTab,
+    MPlayer
   }
 };
 </script>

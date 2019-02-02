@@ -48,8 +48,9 @@
     >
       <div class="song-list-wrapper">
         <song-list
-          :songs = "songs"
-          :rank  = "rank"
+          :songs    = "songs"
+          :rank     = "rank"
+            @select = "selectItem"
         ></song-list>
       </div>
       <div
@@ -66,6 +67,8 @@
 import MScroll from "base/scroll/scroll";
 import MLoadding from "base/loadding/loadding";
 import SongList from "base/songlist/songlist";
+import { mapActions } from "vuex";
+
 const TRANSFORMY_RESERVED = 40;  //顶部高度
 export default {
   name: "musiclist",
@@ -107,6 +110,7 @@ export default {
     }px`;
   },
   methods: {
+    ...mapActions(["selectPlay", "randomPlay"]),
     scroll(pos) {
       this.scrollY = pos.y;
       console.log(this.scrollY);
@@ -114,6 +118,13 @@ export default {
     // 返回按钮
     back() {
       this.$router.back();
+    },
+    selectItem(item, index) {
+      //设置playlist fullscreen 等参数需要acitions派发
+      this.selectPlay({
+        list: this.songs,
+        index
+      });
     }
   },
   computed: {

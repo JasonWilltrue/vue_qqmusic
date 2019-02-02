@@ -2,9 +2,10 @@
   <div class="song-list">
     <ul>
       <li
-          v-for = "(song,index) in songs"
-        :key    = "song.id"
-          class = "item"
+          v-for  = "(song,index) in songs"
+        :key     = "song.id"
+          class  = "item"
+          @click = "selectItem(song,index)"
       >
         <!-- 排行奖杯图片 -->
         <div
@@ -61,6 +62,9 @@ export default {
       if (index > 0) {
         return index + 1;
       }
+    },
+    selectItem(song, index) {
+      this.$emit("select", song, index);
     }
   }
 };
