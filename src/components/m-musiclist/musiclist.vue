@@ -52,6 +52,12 @@
           :rank  = "rank"
         ></song-list>
       </div>
+      <div
+        class  = "loadding"
+        v-show = "!songs.length"
+      >
+        <m-loadding></m-loadding>
+      </div>
     </m-scroll>
   </div>
 </template>
@@ -258,7 +264,7 @@ export default {
     .song-list-wrapper {
       padding: 20px 30px;
     }
-    .loading-container {
+    .loading {
       position : absolute;
       width    : 100%;
       top      : 50%;

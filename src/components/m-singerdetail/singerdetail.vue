@@ -78,10 +78,11 @@ export default {
 
 .slide-enter-active,
 .slide-leave-active {
-  transition: all 0.3s;
+  transition: all 0.3s ease;
 }
 .slide-enter,
-.slider-leave-to {
+.slide-leave-to {
+  opacity  : 0;
   transform: translate3d(100%, 0, 0);
 }
 </style>
