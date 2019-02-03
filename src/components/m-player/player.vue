@@ -68,7 +68,10 @@
               <i class="icon-sequence"></i>
             </div>
             <div class="icon i-left">
-              <i class="icon-prev"></i>
+              <i
+                class  = "icon-prev"
+                @click = "prev"
+              ></i>
             </div>
             <div class="icon i-center">
               <i
@@ -77,7 +80,10 @@
               ></i>
             </div>
             <div class="icon i-right">
-              <i class="icon-next"></i>
+              <i
+                class  = "icon-next"
+                @click = "next"
+              ></i>
             </div>
             <div class="icon i-right">
               <i class="icon icon-not-favorite"></i>
@@ -157,7 +163,8 @@ export default {
   methods: {
     ...mapMutations({
       setFullScreen  : "SET_FULL_SCREEN",
-      setPlayingState: "SET_PLAYING_STATE"
+      setPlayingState: "SET_PLAYING_STATE",
+      setCurrentIndex: "SET_CURRENT_INDEX"
     }),
     back() {
       //do something
@@ -243,6 +250,42 @@ export default {
       // 暂停时，歌词也暂停
       // if (this.currentLyric) {
       //   this.currentLyric.togglePlay();
+      // }
+    },
+    next() {
+      // 如果播放列表只要一条数据
+      if (this.playlist.length === 1) {
+        this.loopSong();
+      } else {
+        let index = this.currentIndex + 1;
+        if (index === this.playlist.length) {
+          index = 0;
+        }
+        this.setCurrentIndex(index);
+        //判断如果为播放状态切换
+        if (!this.playing) {
+          this.togglePlaying();
+        }
+      }
+    },
+    prev() {
+      let index = this.currentIndex - 1;
+      if (index === -1) {
+        index = this.playlist.length - 1;  //最后一首歌
+      }
+      this.setCurrentIndex(index);
+      if (!this.playing) {
+        this.togglePlaying();
+      }
+    },
+    // 单曲循环
+    loopSong() {
+      // this.$refs.audioRef.currentTime = 0;
+      this.$refs.audioRef.play();
+
+      // // 单曲循环时，歌词也单曲循环
+      // if (this.currentLyric) {
+      //   this.currentLyric.seek(0);
       // }
     }
   },
@@ -365,11 +408,10 @@ export default {
             border       : 10px solid rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             &.play {
-              animation: rotate 20s liner infinite;
+              animation: rotate 20s linear infinite;
             }
             &.pause {
-              animation-play-state        : paused;
-              -webkit-animation-play-state: paused;
+              animation-play-state: paused;
             }
             .image {
               position     : absolute;
