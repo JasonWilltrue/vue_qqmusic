@@ -48,7 +48,10 @@
               class = "cd-wrapper"
               ref   = "cdRef"
             >
-              <div class="cd">
+              <div
+                  class = "cd"
+                :class  = "playing ? 'play' : 'play pause'"
+              >
                 <img
                   :src    = "currentSong.image"
                     alt   = ""
@@ -68,7 +71,10 @@
               <i class="icon-prev"></i>
             </div>
             <div class="icon i-center">
-              <i class="icon-play"></i>
+              <i
+                  @click = "togglePlaying"
+                :class   = "playing ? 'icon-pause' : 'icon-play'"
+              ></i>
             </div>
             <div class="icon i-right">
               <i class="icon-next"></i>
@@ -93,22 +99,37 @@
               alt    = ""
               width  = "100%"
               height = "100%"
+            :class   = "playing ? 'play' : 'play pause'"
           >
         </div>
         <div class="text">
-          <h2
+          <p
+            v-html = "currentSong.name"
             class  = "name"
+          ></p>
+          <p
             v-html = "currentSong.singer"
-          ></h2>
-          <p class="desc"></p>
+            class  = "desc"
+          ></p>
         </div>
-        <div class="control"></div>
+        <div class="control">
+          <i
+              @click.stop = "togglePlaying"
+            :class        = "playing ? 'icon-pause-mini' : 'icon-play-mini'"
+              class       = "icon-mini"
+          ></i>
+        </div>
         <div class="control">
           <i class="icon-playlist"></i>
         </div>
       </div>
     </transition>
-
+    <!-- 播放器 -->
+    <audio
+        ref = "audioRef"
+      :src  = "currentSong.url"
+    >
+      Your browser does not support the audio element.</audio>
   </div>
 </template>
 
@@ -135,7 +156,8 @@ export default {
   },
   methods: {
     ...mapMutations({
-      setFullScreen: "SET_FULL_SCREEN"
+      setFullScreen  : "SET_FULL_SCREEN",
+      setPlayingState: "SET_PLAYING_STATE"
     }),
     back() {
       //do something
@@ -209,8 +231,55 @@ export default {
         y,
         scale
       };
+    },
+    //=======歌曲播放操作========
+    togglePlaying() {
+      // if (!this.songCanplay) {
+      //   return;
+      // }
+
+      this.setPlayingState(!this.playing);
+
+      // 暂停时，歌词也暂停
+      // if (this.currentLyric) {
+      //   this.currentLyric.togglePlay();
+      // }
     }
-    //=======动画钩子函数========
+  },
+  watch: {
+    currentSong(newVal, oldVal) {
+      this.$nextTick(() => {
+        this.$refs.audioRef.play();
+      });
+
+      // 播放列表没有歌曲就退出
+      if (!newVal.id) {
+        return;
+      }
+      //相同歌曲就跳出
+      if (newVal.id === oldVal.id) {
+        return;
+      }
+
+      // 切歌时，停止当前歌词
+      if (this.currentLyric) {
+        this.currentLyric.stop();
+      }
+
+      // DOM 更新了
+      clearTimeout(this.timer);
+      this.timer = setTimeout(() => {
+        this.$refs.audioRef.play();
+        // this._getLyric();
+      }, 1000);
+    },
+    // 监听播放状态：播放 or 暂停
+    playing(newVal) {
+      const audio = this.$refs.audioRef;
+      this.$nextTick(() => {
+        newVal ? audio.play(): audio.pause();
+      });
+    }
   }
 };
 </script>
@@ -445,9 +514,10 @@ export default {
       }
     }
     .control {
-      flex   : 0 0 30px;
-      width  : 30px;
-      padding: 0 10px;
+      flex    : 0 0 30px;
+      width   : 30px;
+      padding : 0 10px;
+      position: relative;
       .icon-play-mini,
       .icon-pause-mini,
       .icon-playlist {
@@ -455,10 +525,10 @@ export default {
         color    : @color-theme-d;
       }
       .icon-mini {
-        font-size: 32px;
         position : absolute;
         left     : 0;
-        top      : 0;
+        top      : -14px;
+        font-size: 32px;
       }
     }
   }
