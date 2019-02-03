@@ -121,6 +121,8 @@ export default {
     },
     selectItem(item, index) {
       //设置playlist fullscreen 等参数需要acitions派发
+      console.log(this.songs[index]);
+
       this.selectPlay({
         list: this.songs,
         index
