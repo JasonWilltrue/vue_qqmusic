@@ -44,7 +44,10 @@
         <!-- 中间部分 -->
         <div class="middle">
           <div class="middle-l">
-            <div class="cd-wrapper">
+            <div
+              class = "cd-wrapper"
+              ref   = "cdRef"
+            >
               <div class="cd">
                 <img
                   :src    = "currentSong.image"
@@ -111,6 +114,7 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
+import animations from "create-keyframe-animation";
 export default {
   name: "player",
   created() {
@@ -139,7 +143,74 @@ export default {
     },
     open() {
       this.setFullScreen(true);
+    },
+    //=======动画钩子函数========
+    // 中部 cd 唱片，js 动画钩子
+    enter(el, done) {
+      const { x, y, scale } = this._getPosAndScale();
+
+      let animation = {
+        0: {
+          transform: `translate3d(${x}px, ${y}px, 0) scale(${scale})`
+        },
+        60: {
+          transform: `translate3d(0, 0, 0) scale(1.1)`
+        },
+        100: {
+          transform: `translate3d(0, 0, 0) scale(1)`
+        }
+      };
+
+      animations.registerAnimation({
+        name: "move",
+        animation,
+        presets: {
+          duration: 400,
+          easing  : "linear",
+          delay   : 100
+        }
+      });
+      // then run it
+      animations.runAnimation(this.$refs.cdRef, "move", done);
+    },
+    afterEnter() {
+      animations.unregisterAnimation("move");
+      this.$refs.cdRef.style.animation = "";
+    },
+    leave(el, done) {
+      const { x, y, scale } = this._getPosAndScale();
+
+      this.$refs.cdRef.style["transition"] = `all 0.4s ease`;
+      this.$refs.cdRef.style[
+        "transform"
+      ] = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
+      this.$refs.cdRef.style[
+        "webkitTransform"
+      ] = `translate3d(${x}px, ${y}px, 0) scale(${scale})`;
+
+      this.$refs.cdRef.addEventListener("transitionend", done);
+    },
+    afterLeave() {
+      this.$refs.cdRef.style["transition"]      = "";
+      this.$refs.cdRef.style["transform"]       = "";
+      this.$refs.cdRef.style["webkitTransform"] = "";
+    },
+    _getPosAndScale() {
+      const targetWidth   = 40;
+      const paddingLeft   = 40;                                                           //小图中心点距离最左边40
+      const paddingBottom = 30;                                                           //小图中心店距离底部
+      const paddingTop    = 80;                                                           //大图距离顶部高度
+      const width         = window.innerWidth * 0.8;
+      const scale         = targetWidth / width;                                          //缩放比例
+      const x             = -(window.innerWidth / 2 - paddingLeft);
+      const y             = window.innerHeight - paddingTop - width / 2 - paddingBottom;
+      return {
+        x,
+        y,
+        scale
+      };
     }
+    //=======动画钩子函数========
   }
 };
 </script>
