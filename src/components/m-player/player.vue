@@ -67,7 +67,10 @@
           <div class="progress-wrapper">
             <span class="time time-l">{{timeFormat(currentTime)}}</span>
             <div class="progress-bar-wrapper">
-              <progress-bar :percent="percent"></progress-bar>
+              <progress-bar
+                :percent         = "percent"
+                  @percentChange = "percentChange"
+              ></progress-bar>
             </div>
             <span class="time time-r">{{timeFormat(currentSong.duration)}}</span>
           </div>
@@ -321,6 +324,16 @@ export default {
       // if (this.currentLyric) {
       //   this.currentLyric.seek(0);
       // }
+    },
+    // props down，当进度改变了
+    percentChange(newPercent) {
+      let currentTime                     = this.currentSong.duration * newPercent;
+          this.$refs.audioRef.currentTime = currentTime;
+
+      // 进度改变后自动播放
+      if (!this.playing) {
+        this.togglePlaying();
+      }
     }
   },
   watch: {
