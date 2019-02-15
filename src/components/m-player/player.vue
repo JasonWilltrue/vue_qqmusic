@@ -75,8 +75,11 @@
             <span class="time time-r">{{timeFormat(currentSong.duration)}}</span>
           </div>
           <div class="operators">
-            <div class="icon i-left">
-              <i class="icon-sequence"></i>
+            <div
+              class  = "icon i-left"
+              @click = "changeMode"
+            >
+              <i :class="iconMode"></i>
             </div>
             <div class="icon i-left">
               <i
@@ -161,6 +164,7 @@ import { mapGetters, mapMutations } from "vuex";
 import animations from "create-keyframe-animation";
 import progressBar from "base/progressbar/progressbar";
 import progressCircle from "base/progresscircle/progresscircle";
+import { utilsArray } from "common/js/utils";
 export default {
   name      : "player",
   components: {
@@ -180,6 +184,20 @@ export default {
     percent() {
       return this.currentTime / this.currentSong.duration;
     },
+    // 播放模式对应图标字体
+    iconMode() {
+      let cls = "";
+      if (this.mode === 0) {
+        cls = "icon-sequence";
+      } else if (this.mode === 1) {
+        cls = "icon-loop";
+      } else if (this.mode === 2) {
+        cls = "icon-random";
+      } else {
+        cls = "";
+      }
+      return cls;
+    },
     //获取全局的播放设置参数
     ...mapGetters([
       "fullScreen",
@@ -196,7 +214,9 @@ export default {
     ...mapMutations({
       setFullScreen  : "SET_FULL_SCREEN",
       setPlayingState: "SET_PLAYING_STATE",
-      setCurrentIndex: "SET_CURRENT_INDEX"
+      setCurrentIndex: "SET_CURRENT_INDEX",
+      setMode        : "SET_MODE",
+      setPlayList    : "SET_PLAYLIST"
     }),
     back() {
       //do something
@@ -341,14 +361,31 @@ export default {
       if (!this.playing) {
         this.togglePlaying();
       }
+    },
+    //改变播放模式
+    changeMode() {
+      let mode = (this.mode + 1) % 3;
+      this.setMode(mode); //派发action
+      //修改播放列表
+      let newList = null;
+      if (mode === 2) {
+        // 随机播放
+        newList = utilsArray.shuffle(this.sequenceList);
+      } else {
+        // 顺序播放、单曲循环
+        newList = this.sequenceList;
+      }
+
+      // 调整当前歌曲的索引
+      let index = newList.findIndex(item => {
+        return item.id === this.currentSong.id;
+      });
+      this.setCurrentIndex(index);
+      this.setPlayList(newList);
     }
   },
   watch: {
     currentSong(newVal, oldVal) {
-      this.$nextTick(() => {
-        this.$refs.audioRef.play();
-      });
-
       // 播放列表没有歌曲就退出
       if (!newVal.id) {
         return;
@@ -357,7 +394,9 @@ export default {
       if (newVal.id === oldVal.id) {
         return;
       }
-
+      this.$nextTick(() => {
+        this.$refs.audioRef.play();
+      });
       // 切歌时，停止当前歌词
       if (this.currentLyric) {
         this.currentLyric.stop();
