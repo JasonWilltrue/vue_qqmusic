@@ -154,6 +154,7 @@
         ref         = "audioRef"
       :src          = "currentSong.url"
         @timeupdate = "updateTime"
+        @ended      = "ended"
     >
       Your browser does not support the audio element.</audio>
   </div>
@@ -224,6 +225,15 @@ export default {
     },
     open() {
       this.setFullScreen(true);
+    },
+    // audio API ended  当前歌曲播放完毕
+    ended() {
+      if (this.mode === 1) {
+        // 单曲循环模式
+        this.loopSong();
+      } else {
+        this.next();
+      }
     },
     //=======动画钩子函数========
     // 中部 cd 唱片，js 动画钩子
@@ -344,7 +354,7 @@ export default {
     },
     // 单曲循环
     loopSong() {
-      // this.$refs.audioRef.currentTime = 0;
+      this.$refs.audioRef.currentTime = 0;
       this.$refs.audioRef.play();
 
       // // 单曲循环时，歌词也单曲循环
