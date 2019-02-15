@@ -63,6 +63,14 @@
         </div>
         <!-- 底部操作区 -->
         <div class="bottom">
+          <!-- 进度条 -->
+          <div class="progress-wrapper">
+            <span class="time time-l">{{timeFormat(currentTime)}}</span>
+            <div class="progress-bar-wrapper">
+              <progress-bar :percent="percent"></progress-bar>
+            </div>
+            <span class="time time-r">{{timeFormat(currentSong.duration)}}</span>
+          </div>
           <div class="operators">
             <div class="icon i-left">
               <i class="icon-sequence"></i>
@@ -132,8 +140,9 @@
     </transition>
     <!-- 播放器 -->
     <audio
-        ref = "audioRef"
-      :src  = "currentSong.url"
+        ref         = "audioRef"
+      :src          = "currentSong.url"
+        @timeupdate = "updateTime"
     >
       Your browser does not support the audio element.</audio>
   </div>
@@ -142,12 +151,25 @@
 <script>
 import { mapGetters, mapMutations } from "vuex";
 import animations from "create-keyframe-animation";
+import progressBar from "base/progressbar/progressbar";
 export default {
-  name: "player",
+  name      : "player",
+  components: {
+    progressBar
+  },
+  data() {
+    return {
+      songReady  : false,
+      currentTime: 0
+    };
+  },
   created() {
     console.log(this.currentSong);
   },
   computed: {
+    percent() {
+      return this.currentTime / this.currentSong.duration;
+    },
     //获取全局的播放设置参数
     ...mapGetters([
       "fullScreen",
@@ -239,6 +261,18 @@ export default {
         scale
       };
     },
+    updateTime(e) {
+      this.currentTime = e.target.currentTime;
+    },
+    /**
+     * 时间格式转换分钟，秒
+     */
+    timeFormat(time) {
+            time = Math.floor(time);
+      const min  = Math.floor(time / 60);
+      const sec  = time % 60 < 10 ? "0" + (time % 60) : time % 60;
+      return `${min}:${sec}`;
+    },
     //=======歌曲播放操作========
     togglePlaying() {
       // if (!this.songCanplay) {
@@ -262,7 +296,7 @@ export default {
           index = 0;
         }
         this.setCurrentIndex(index);
-        //判断如果为播放状态切换
+        //如果发现为暂停状态切换下一首各⭐️
         if (!this.playing) {
           this.togglePlaying();
         }
@@ -451,8 +485,26 @@ export default {
         display    : flex;
         align-items: center;
         width      : 80%;
-        margin     : 0 auto;
+        margin     : 0px auto;
         padding    : 10px 0;
+        .time {
+          color      : @color-text;
+          font-size  : @font-size-small;
+          flex       : 0 0 30px;
+          line-height: 30px;
+          width      : 30px;
+          &.time-l {
+            text-align  : left;
+            margin-right: 5px;
+          }
+          &.time-r {
+            text-align : right;
+            margin-left: 5px;
+          }
+        }
+        .progress-bar-wrapper {
+          flex: 1;
+        }
       }
       .operators {
         display    : flex;
