@@ -130,11 +130,16 @@
           ></p>
         </div>
         <div class="control">
-          <i
-              @click.stop = "togglePlaying"
-            :class        = "playing ? 'icon-pause-mini' : 'icon-play-mini'"
-              class       = "icon-mini"
-          ></i>
+          <progress-circle
+            :percent = "percent"
+            :radius  = "32"
+          >
+            <i
+                @click.stop = "togglePlaying"
+              :class        = "playing ? 'icon-pause-mini' : 'icon-play-mini'"
+                class       = "icon-mini"
+            ></i>
+          </progress-circle>
         </div>
         <div class="control">
           <i class="icon-playlist"></i>
@@ -155,10 +160,12 @@
 import { mapGetters, mapMutations } from "vuex";
 import animations from "create-keyframe-animation";
 import progressBar from "base/progressbar/progressbar";
+import progressCircle from "base/progresscircle/progresscircle";
 export default {
   name      : "player",
   components: {
-    progressBar
+    progressBar,
+    progressCircle
   },
   data() {
     return {
@@ -634,7 +641,7 @@ export default {
       .icon-mini {
         position : absolute;
         left     : 0;
-        top      : -14px;
+        top      : 0px;
         font-size: 32px;
       }
     }
