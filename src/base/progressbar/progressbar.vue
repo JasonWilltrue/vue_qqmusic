@@ -55,8 +55,7 @@ export default {
       // 返回一个矩形对象，包含四个属性：left、top、right和bottom。分别表示元素各边与页面上边和左边的距离。
       let rectLeft    = this.$refs.barRef.getBoundingClientRect().left;
       let offsetWidth = e.pageX - rectLeft;
-
-      // this._move(e.offsetX) // 这样的话，点小球的时候数据不对，弃
+      console.log(e.pageX, rectLeft);
       this._move(offsetWidth);
       this._percentChange();
     },
