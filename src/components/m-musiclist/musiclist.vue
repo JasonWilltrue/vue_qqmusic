@@ -22,7 +22,10 @@
         class = "play-wrapper"
         ref   = "playRef"
       >
-        <div class="play">
+        <div
+          class  = "play"
+          @click = "playRandom"
+        >
           <i class="icon-play"></i>
           <span class="text">随机播放全部</span>
         </div>
@@ -126,6 +129,12 @@ export default {
       this.selectPlay({
         list: this.songs,
         index
+      });
+    },
+    // 随机播放全部按钮
+    playRandom() {
+      this.randomPlay({
+        list: this.songs
       });
     }
   },
