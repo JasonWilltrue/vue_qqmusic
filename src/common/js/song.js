@@ -28,6 +28,7 @@ export default class Song {
   }
   // 获取歌词数据
   getLyric() {
+    // 优化不用重复请求
     if (this.lyric) {
       return Promise.resolve(this.lyric)
     }
@@ -35,9 +36,10 @@ export default class Song {
       getLyric(this.mid).then(res => {
         if (res.retcode === 0) {
           this.lyric = Base64.decode(res.lyric)
+          // console.log(this.lyric);
           resolve(this.lyric)
         } else {
-          reject('no lyric')
+          reject('卧槽！找不到歌词')
         }
       })
     })

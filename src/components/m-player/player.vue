@@ -166,6 +166,7 @@ import animations from "create-keyframe-animation";
 import progressBar from "base/progressbar/progressbar";
 import progressCircle from "base/progresscircle/progresscircle";
 import { utilsArray } from "common/js/utils";
+import Lyric from "lyric-parser"; // QQ音乐 歌词解析
 export default {
   name      : "player",
   components: {
@@ -174,8 +175,20 @@ export default {
   },
   data() {
     return {
-      songReady  : false,
-      currentTime: 0
+      // 标志位。歌曲已缓存好，可以播放了
+      songReady: false,
+      // 当前播放时间
+      currentTime: 0,
+      // 当前的歌词
+      currentLyric: null,
+      // 当前的歌词在第几行
+      currentLyricLine: 0,
+      // 当前在哪个分页
+      currentDot: "cd",
+      // cd页小段歌词
+      playingLyric: "无歌词数据",
+      // 是否显示播放列表
+      showList: false
     };
   },
   created() {
@@ -392,6 +405,21 @@ export default {
       });
       this.setCurrentIndex(index);
       this.setPlayList(newList);
+    },
+    // 歌词处理
+    _getLyric() {
+      this.currentSong
+        .getLyric()
+        .then(lyric => {
+          this.currentLyric = new Lyric(lyric);
+          console.log(this.currentLyric);
+        })
+        .catch(() => {
+          // 获取歌词失败时
+          this.currentLyric     = null;
+          this.playingLyric     = "无歌词数据";
+          this.currentLyricLine = 0;
+        });
     }
   },
   watch: {
@@ -407,7 +435,7 @@ export default {
       this.$nextTick(() => {
         this.$refs.audioRef.play();
         //获取歌词
-        this.currentSong.getLyric();
+        this._getLyric();
       });
       // 切歌时，停止当前歌词
       if (this.currentLyric) {
