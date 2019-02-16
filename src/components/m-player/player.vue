@@ -406,6 +406,8 @@ export default {
       }
       this.$nextTick(() => {
         this.$refs.audioRef.play();
+        //获取歌词
+        this.currentSong.getLyric();
       });
       // 切歌时，停止当前歌词
       if (this.currentLyric) {

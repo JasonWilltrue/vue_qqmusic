@@ -1,3 +1,11 @@
+import {
+  getLyric
+} from 'api/song.js'
+import {
+  Base64
+} from 'js-base64'
+
+
 export default class Song {
   constructor({
     id,
@@ -18,6 +26,26 @@ export default class Song {
     this.image    = image;
     this.url      = url;
   }
+  // 获取歌词数据
+  getLyric() {
+    if (this.lyric) {
+      return Promise.resolve(this.lyric)
+    }
+    return new Promise((resolve, reject) => {
+      getLyric(this.mid).then(res => {
+        if (res.retcode === 0) {
+          this.lyric = Base64.decode(res.lyric)
+          resolve(this.lyric)
+        } else {
+          reject('no lyric')
+        }
+      })
+    })
+  }
+
+
+
+
 }
 
 /**
