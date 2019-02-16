@@ -43,6 +43,7 @@
         </div>
         <!-- 中间部分 -->
         <div class="middle">
+          <!-- 歌曲封面 -->
           <div class="middle-l">
             <div
               class = "cd-wrapper"
@@ -60,6 +61,24 @@
               </div>
             </div>
           </div>
+          <!-- 歌词部分 -->
+          <m-scroll
+              ref   = "lyricList"
+              class = "middle-r"
+            :data   = "currentLyric && currentLyric.lines"
+          >
+            <div class="lyric-wrapper">
+              <div v-if="currentLyric">
+                <p
+                    ref   = "lyricLine"
+                    v-for = "(line, index) in currentLyric.lines"
+                  :key    = "index"
+                  :class  = "{ 'current':currentLyricLine === index }"
+                    class = "text"
+                >{{ line.txt }}</p>
+              </div>
+            </div>
+          </m-scroll>
         </div>
         <!-- 底部操作区 -->
         <div class="bottom">
@@ -167,11 +186,13 @@ import progressBar from "base/progressbar/progressbar";
 import progressCircle from "base/progresscircle/progresscircle";
 import { utilsArray } from "common/js/utils";
 import Lyric from "lyric-parser"; // QQ音乐 歌词解析
+import MScroll from "base/scroll/scroll";
 export default {
   name      : "player",
   components: {
     progressBar,
-    progressCircle
+    progressCircle,
+    MScroll
   },
   data() {
     return {
@@ -411,8 +432,12 @@ export default {
       this.currentSong
         .getLyric()
         .then(lyric => {
-          this.currentLyric = new Lyric(lyric);
+          this.currentLyric = new Lyric(lyric, this.handleLyric);
           console.log(this.currentLyric);
+          //歌曲播放时候歌词播放
+          if (this.playing) {
+            this.currentLyric.play();
+          }
         })
         .catch(() => {
           // 获取歌词失败时
@@ -420,6 +445,22 @@ export default {
           this.playingLyric     = "无歌词数据";
           this.currentLyricLine = 0;
         });
+    },
+    // new Lyric 回调函数
+    handleLyric({ lineNum, txt }) {
+      // this hanlder called when lineNum change
+      this.currentLyricLine = lineNum;
+
+      // 歌词在中间
+      if (lineNum > 5) {
+        let el = this.$refs.lyricLine[lineNum - 5];
+        this.$refs.lyricList.scrollToElement(el, 1000);
+      } else {
+        this.$refs.lyricList.scrollTo(0, 0, 1000);
+      }
+
+      // 当前歌词
+      this.playingLyric = txt;
     }
   },
   watch: {
@@ -553,6 +594,27 @@ export default {
               width        : 100%;
               height       : 100%;
               border-radius: 50%;
+            }
+          }
+        }
+      }
+      .middle-r {
+        display       : inline-block;
+        vertical-align: top;
+        width         : 100%;
+        height        : 100%;
+        overflow      : hidden;
+        .lyric-wrapper {
+          width     : 80%;
+          margin    : 0 auto;
+          overflow  : hidden;
+          text-align: center;
+          .text {
+            line-height: 32px;
+            color      : @color-text-l;
+            font-size  : @font-size-medium;
+            &.current {
+              color: @color-text;
             }
           }
         }
