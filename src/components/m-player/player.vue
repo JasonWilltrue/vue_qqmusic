@@ -1,8 +1,5 @@
 <template>
-  <div
-    class  = "player"
-    v-show = "playlist.length>0"
-  >
+  <div class="player" v-show="playlist.length>0">
     <transition
       name         = "normal"
       @enter       = "enter"
@@ -11,62 +8,36 @@
       @after-leave = "afterLeave"
     >
       <!-- 展开的播放器 -->
-      <div
-        class  = "normal-player"
-        v-show = "fullScreen"
-      >
+      <div class="normal-player" v-show="fullScreen">
         <!-- 背景图 -->
         <div class="background">
-          <img
-            :src     = "currentSong.image"
-              alt    = "bagurl"
-              width  = "100%"
-              height = "100%"
-          >
+          <img :src="currentSong.image" alt="bagurl" width="100%" height="100%">
         </div>
         <!-- 顶部 -->
         <div class="top">
-          <div
-            class  = "back"
-            @click = "back"
-          >
+          <div class="back" @click="back">
             <i class="icon-back"></i>
           </div>
-          <h1
-            class  = "title"
-            v-html = "currentSong.name"
-          ></h1>
-          <h2
-            class  = "subtitle"
-            v-html = "currentSong.singer"
-          ></h2>
+          <h1 class="title" v-html="currentSong.name"></h1>
+          <h2 class="subtitle" v-html="currentSong.singer"></h2>
         </div>
         <!-- 中间部分 -->
-        <div class="middle">
+        <div
+          class               = "middle"
+          @touchstart.prevent = "middleTouchstart"
+          @touchmove.prevent  = "middleTouchmove"
+          @touchend           = "middleTouchend"
+        >
           <!-- 歌曲封面 -->
           <div class="middle-l">
-            <div
-              class = "cd-wrapper"
-              ref   = "cdRef"
-            >
-              <div
-                  class = "cd"
-                :class  = "playing ? 'play' : 'play pause'"
-              >
-                <img
-                  :src    = "currentSong.image"
-                    alt   = ""
-                    class = "image"
-                >
+            <div class="cd-wrapper" ref="cdRef">
+              <div class="cd" :class="playing ? 'play' : 'play pause'">
+                <img :src="currentSong.image" alt class="image">
               </div>
             </div>
           </div>
           <!-- 歌词部分 -->
-          <m-scroll
-              ref   = "lyricList"
-              class = "middle-r"
-            :data   = "currentLyric && currentLyric.lines"
-          >
+          <m-scroll ref="lyricList" class="middle-r" :data="currentLyric && currentLyric.lines">
             <div class="lyric-wrapper">
               <div v-if="currentLyric">
                 <p
@@ -82,41 +53,31 @@
         </div>
         <!-- 底部操作区 -->
         <div class="bottom">
+          <!-- 分页点 -->
+          <div class="dot-wrapper">
+            <span :class="{ 'active': currentDot === 'cd' }" class="dot"></span>
+            <span :class="{ 'active': currentDot === 'lyric' }" class="dot"></span>
+          </div>
           <!-- 进度条 -->
           <div class="progress-wrapper">
             <span class="time time-l">{{timeFormat(currentTime)}}</span>
             <div class="progress-bar-wrapper">
-              <progress-bar
-                :percent         = "percent"
-                  @percentChange = "percentChange"
-              ></progress-bar>
+              <progress-bar :percent="percent" @percentChange="percentChange"></progress-bar>
             </div>
             <span class="time time-r">{{timeFormat(currentSong.duration)}}</span>
           </div>
           <div class="operators">
-            <div
-              class  = "icon i-left"
-              @click = "changeMode"
-            >
+            <div class="icon i-left" @click="changeMode">
               <i :class="iconMode"></i>
             </div>
             <div class="icon i-left">
-              <i
-                class  = "icon-prev"
-                @click = "prev"
-              ></i>
+              <i class="icon-prev" @click="prev"></i>
             </div>
             <div class="icon i-center">
-              <i
-                  @click = "togglePlaying"
-                :class   = "playing ? 'icon-pause' : 'icon-play'"
-              ></i>
+              <i @click="togglePlaying" :class="playing ? 'icon-pause' : 'icon-play'"></i>
             </div>
             <div class="icon i-right">
-              <i
-                class  = "icon-next"
-                @click = "next"
-              ></i>
+              <i class="icon-next" @click="next"></i>
             </div>
             <div class="icon i-right">
               <i class="icon icon-not-favorite"></i>
@@ -127,35 +88,22 @@
     </transition>
     <!-- mini播放器 -->
     <transition name="mini">
-      <div
-        class  = "mini-player"
-        v-show = "!fullScreen"
-        @click = "open"
-      >
+      <div class="mini-player" v-show="!fullScreen" @click="open">
         <div class="icon">
           <img
-            :src     = "currentSong.image"
-              alt    = ""
+            :src = "currentSong.image"
+            alt
               width  = "100%"
               height = "100%"
             :class   = "playing ? 'play' : 'play pause'"
           >
         </div>
         <div class="text">
-          <p
-            v-html = "currentSong.name"
-            class  = "name"
-          ></p>
-          <p
-            v-html = "currentSong.singer"
-            class  = "desc"
-          ></p>
+          <p v-html="currentSong.name" class="name"></p>
+          <p v-html="currentSong.singer" class="desc"></p>
         </div>
         <div class="control">
-          <progress-circle
-            :percent = "percent"
-            :radius  = "32"
-          >
+          <progress-circle :percent="percent" :radius="32">
             <i
                 @click.stop = "togglePlaying"
               :class        = "playing ? 'icon-pause-mini' : 'icon-play-mini'"
@@ -174,8 +122,7 @@
       :src          = "currentSong.url"
         @timeupdate = "updateTime"
         @ended      = "ended"
-    >
-      Your browser does not support the audio element.</audio>
+    >Your browser does not support the audio element.</audio>
   </div>
 </template>
 
@@ -194,7 +141,7 @@ export default {
     progressCircle,
     MScroll
   },
-  data() {
+  data () {
     return {
       // 标志位。歌曲已缓存好，可以播放了
       songReady: false,
@@ -212,15 +159,16 @@ export default {
       showList: false
     };
   },
-  created() {
+  created () {
+    this.touch = {};
     console.log(this.currentSong);
   },
   computed: {
-    percent() {
+    percent () {
       return this.currentTime / this.currentSong.duration;
     },
     // 播放模式对应图标字体
-    iconMode() {
+    iconMode () {
       let cls = "";
       if (this.mode === 0) {
         cls = "icon-sequence";
@@ -253,15 +201,15 @@ export default {
       setMode        : "SET_MODE",
       setPlayList    : "SET_PLAYLIST"
     }),
-    back() {
+    back () {
       //do something
       this.setFullScreen(false);
     },
-    open() {
+    open () {
       this.setFullScreen(true);
     },
     // audio API ended  当前歌曲播放完毕
-    ended() {
+    ended () {
       if (this.mode === 1) {
         // 单曲循环模式
         this.loopSong();
@@ -271,7 +219,7 @@ export default {
     },
     //=======动画钩子函数========
     // 中部 cd 唱片，js 动画钩子
-    enter(el, done) {
+    enter (el, done) {
       const { x, y, scale } = this._getPosAndScale();
 
       let animation = {
@@ -298,11 +246,11 @@ export default {
       // then run it
       animations.runAnimation(this.$refs.cdRef, "move", done);
     },
-    afterEnter() {
+    afterEnter () {
       animations.unregisterAnimation("move");
       this.$refs.cdRef.style.animation = "";
     },
-    leave(el, done) {
+    leave (el, done) {
       const { x, y, scale } = this._getPosAndScale();
 
       this.$refs.cdRef.style["transition"] = `all 0.4s ease`;
@@ -315,12 +263,12 @@ export default {
 
       this.$refs.cdRef.addEventListener("transitionend", done);
     },
-    afterLeave() {
+    afterLeave () {
       this.$refs.cdRef.style["transition"]      = "";
       this.$refs.cdRef.style["transform"]       = "";
       this.$refs.cdRef.style["webkitTransform"] = "";
     },
-    _getPosAndScale() {
+    _getPosAndScale () {
       const targetWidth   = 40;
       const paddingLeft   = 40;                                                           //小图中心点距离最左边40
       const paddingBottom = 30;                                                           //小图中心店距离底部
@@ -335,20 +283,20 @@ export default {
         scale
       };
     },
-    updateTime(e) {
+    updateTime (e) {
       this.currentTime = e.target.currentTime;
     },
     /**
      * 时间格式转换分钟，秒
      */
-    timeFormat(time) {
+    timeFormat (time) {
             time = Math.floor(time);
       const min  = Math.floor(time / 60);
       const sec  = time % 60 < 10 ? "0" + (time % 60) : time % 60;
       return `${min}:${sec}`;
     },
     //=======歌曲播放操作========
-    togglePlaying() {
+    togglePlaying () {
       // if (!this.songCanplay) {
       //   return;
       // }
@@ -360,7 +308,7 @@ export default {
       //   this.currentLyric.togglePlay();
       // }
     },
-    next() {
+    next () {
       // 如果播放列表只要一条数据
       if (this.playlist.length === 1) {
         this.loopSong();
@@ -376,7 +324,7 @@ export default {
         }
       }
     },
-    prev() {
+    prev () {
       let index = this.currentIndex - 1;
       if (index === -1) {
         index = this.playlist.length - 1;  //最后一首歌
@@ -387,7 +335,7 @@ export default {
       }
     },
     // 单曲循环
-    loopSong() {
+    loopSong () {
       this.$refs.audioRef.currentTime = 0;
       this.$refs.audioRef.play();
 
@@ -397,7 +345,7 @@ export default {
       // }
     },
     // props down，当进度改变了
-    percentChange(newPercent) {
+    percentChange (newPercent) {
       let currentTime                     = this.currentSong.duration * newPercent;
           this.$refs.audioRef.currentTime = currentTime;
 
@@ -407,7 +355,7 @@ export default {
       }
     },
     //改变播放模式
-    changeMode() {
+    changeMode () {
       let mode = (this.mode + 1) % 3;
       this.setMode(mode); //派发action
       //修改播放列表
@@ -428,7 +376,7 @@ export default {
       this.setPlayList(newList);
     },
     // 歌词处理
-    _getLyric() {
+    _getLyric () {
       this.currentSong
         .getLyric()
         .then(lyric => {
@@ -447,7 +395,7 @@ export default {
         });
     },
     // new Lyric 回调函数
-    handleLyric({ lineNum, txt }) {
+    handleLyric ({ lineNum, txt }) {
       // this hanlder called when lineNum change
       this.currentLyricLine = lineNum;
 
@@ -461,10 +409,48 @@ export default {
 
       // 当前歌词
       this.playingLyric = txt;
+    },
+    // 滑动翻页
+    middleTouchstart (e) {
+      // 表示已经初始化过了
+      this.touch.init = true
+      // 开始滑动的位置
+      this.touch.startX = e.touches[0].pageX
+      this.touch.startY = e.touches[0].pageY
+    },
+    middleTouchmove (e) {
+      if (!this.touch.init) {
+        return
+      }
+      // 滑动的差值
+      let deltaX = e.touches[0].pageX - this.touch.startX
+      let deltaY = e.touches[0].pageY - this.touch.startY
+
+      // 纵向滚动偏差绝对值 大于 横轴滚动 return
+      if (Math.abs(deltaX) < Math.abs(deltaY)) {
+        return
+      }
+      let left = this.currentDot === 'cd' ? 0 : -window.innerWidth
+      // 左滑的距离
+      let offsetWidth        = Math.min(0, Math.max(-window.innerWidth, left + deltaX))
+          this.touch.percent = Math.abs(offsetWidth / window.innerWidth)
+      // 过度效果
+      this.$refs.lyricList.$el.style['webkitTransform'] = `translate3d(${offsetWidth}px, 0, 0)`
+      this.$refs.lyricList.$el.style['transform']       = `translate3d(${offsetWidth}px, 0, 0)`
+      // 过渡效果坚持 0ms
+      this.$refs.lyricList.$el.style['webkitTransition-duration'] = 0
+      this.$refs.lyricList.$el.style['transition-duration']       = 0
+      // 背景模糊
+      this.$refs.middleRef.style['opacity']                   = 1 - this.touch.percent
+      this.$refs.middleRef.style['webkitTransition-duration'] = 0
+      this.$refs.middleRef.style['transition-duration']       = 0
+    },
+    middleTouchend (e) {
+
     }
   },
   watch: {
-    currentSong(newVal, oldVal) {
+    currentSong (newVal, oldVal) {
       // 播放列表没有歌曲就退出
       if (!newVal.id) {
         return;
@@ -491,7 +477,7 @@ export default {
       }, 1000);
     },
     // 监听播放状态：播放 or 暂停
-    playing(newVal) {
+    playing (newVal) {
       const audio = this.$refs.audioRef;
       this.$nextTick(() => {
         newVal ? audio.play(): audio.pause();
