@@ -29,7 +29,7 @@
           @touchend           = "middleTouchend"
         >
           <!-- 歌曲封面 -->
-          <div class="middle-l">
+          <div class="middle-l" ref="middleRef">
             <div class="cd-wrapper" ref="cdRef">
               <div class="cd" :class="playing ? 'play' : 'play pause'">
                 <img :src="currentSong.image" alt class="image">
@@ -41,11 +41,11 @@
             <div class="lyric-wrapper">
               <div v-if="currentLyric">
                 <p
-                    ref   = "lyricLine"
-                    v-for = "(line, index) in currentLyric.lines"
-                  :key    = "index"
-                  :class  = "{ 'current':currentLyricLine === index }"
-                    class = "text"
+                      ref   = "lyricLine"
+                      v-for = "(line, index) in currentLyric.lines"
+                    :key    = "index"
+                    :class  = "{ 'current':currentLyricLine === index }"
+                      class = "text"
                 >{{ line.txt }}</p>
               </div>
             </div>
@@ -93,9 +93,9 @@
           <img
             :src = "currentSong.image"
             alt
-              width  = "100%"
-              height = "100%"
-            :class   = "playing ? 'play' : 'play pause'"
+                width  = "100%"
+                height = "100%"
+              :class   = "playing ? 'play' : 'play pause'"
           >
         </div>
         <div class="text">
@@ -105,9 +105,9 @@
         <div class="control">
           <progress-circle :percent="percent" :radius="32">
             <i
-                @click.stop = "togglePlaying"
-              :class        = "playing ? 'icon-pause-mini' : 'icon-play-mini'"
-                class       = "icon-mini"
+                  @click.stop = "togglePlaying"
+                :class        = "playing ? 'icon-pause-mini' : 'icon-play-mini'"
+                  class       = "icon-mini"
             ></i>
           </progress-circle>
         </div>
@@ -118,10 +118,10 @@
     </transition>
     <!-- 播放器 -->
     <audio
-        ref         = "audioRef"
-      :src          = "currentSong.url"
-        @timeupdate = "updateTime"
-        @ended      = "ended"
+          ref         = "audioRef"
+        :src          = "currentSong.url"
+          @timeupdate = "updateTime"
+          @ended      = "ended"
     >Your browser does not support the audio element.</audio>
   </div>
 </template>
@@ -290,9 +290,9 @@ export default {
      * 时间格式转换分钟，秒
      */
     timeFormat (time) {
-            time = Math.floor(time);
-      const min  = Math.floor(time / 60);
-      const sec  = time % 60 < 10 ? "0" + (time % 60) : time % 60;
+                  time = Math.floor(time);
+            const min  = Math.floor(time / 60);
+            const sec  = time % 60 < 10 ? "0" + (time % 60) : time % 60;
       return `${min}:${sec}`;
     },
     //=======歌曲播放操作========
@@ -446,6 +446,40 @@ export default {
       this.$refs.middleRef.style['transition-duration']       = 0
     },
     middleTouchend (e) {
+      let offsetWidth = null
+      let opacity     = null
+      if (this.currentDot === 'cd') {
+        // 左滑
+        if (this.touch.percent > 0.1) {
+          offsetWidth     = -window.innerWidth
+          this.currentDot = 'lyric'
+          opacity         = 0
+        } else {
+          offsetWidth = 0
+          opacity     = 1
+        }
+      } else {
+        // 右滑
+        if (this.touch.percent < 0.9) {
+          offsetWidth     = 0
+          this.currentDot = 'cd'
+          opacity         = 1
+        } else {
+          offsetWidth = -window.innerWidth
+          opacity     = 0
+        }
+      }
+
+      this.$refs.lyricList.$el.style['webkitTransform'] = `translate3d(${offsetWidth}px, 0, 0)`
+      this.$refs.lyricList.$el.style['transform']       = `translate3d(${offsetWidth}px, 0, 0)`
+      // 过渡效果坚持 300ms
+      this.$refs.lyricList.$el.style['webkitTransition-duration'] = '300ms'
+      this.$refs.lyricList.$el.style['transition-duration']       = '300ms'
+      // 背景模糊
+      this.$refs.middleRef.style['opacity']                   = opacity
+      this.$refs.middleRef.style['webkitTransition-duration'] = '300ms'
+      this.$refs.middleRef.style['transition-duration']       = '300ms'
+
 
     }
   },
