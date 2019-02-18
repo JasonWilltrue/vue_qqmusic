@@ -35,17 +35,21 @@
                 <img :src="currentSong.image" alt class="image">
               </div>
             </div>
+            <!-- cd页小段歌词 -->
+            <div class="playing-lyric-wrapper">
+              <div class="playing-lyric">{{ playingLyric }}</div>
+            </div>
           </div>
           <!-- 歌词部分 -->
           <m-scroll ref="lyricList" class="middle-r" :data="currentLyric && currentLyric.lines">
             <div class="lyric-wrapper">
               <div v-if="currentLyric">
                 <p
-                      ref   = "lyricLine"
-                      v-for = "(line, index) in currentLyric.lines"
-                    :key    = "index"
-                    :class  = "{ 'current':currentLyricLine === index }"
-                      class = "text"
+                                        ref   = "lyricLine"
+                                        v-for = "(line, index) in currentLyric.lines"
+                                      :key    = "index"
+                                      :class  = "{ 'current':currentLyricLine === index }"
+                                        class = "text"
                 >{{ line.txt }}</p>
               </div>
             </div>
@@ -93,9 +97,9 @@
           <img
             :src = "currentSong.image"
             alt
-                width  = "100%"
-                height = "100%"
-              :class   = "playing ? 'play' : 'play pause'"
+                                  width  = "100%"
+                                  height = "100%"
+                                :class   = "playing ? 'play' : 'play pause'"
           >
         </div>
         <div class="text">
@@ -105,9 +109,9 @@
         <div class="control">
           <progress-circle :percent="percent" :radius="32">
             <i
-                  @click.stop = "togglePlaying"
-                :class        = "playing ? 'icon-pause-mini' : 'icon-play-mini'"
-                  class       = "icon-mini"
+                                    @click.stop = "togglePlaying"
+                                  :class        = "playing ? 'icon-pause-mini' : 'icon-play-mini'"
+                                    class       = "icon-mini"
             ></i>
           </progress-circle>
         </div>
@@ -118,10 +122,10 @@
     </transition>
     <!-- 播放器 -->
     <audio
-          ref         = "audioRef"
-        :src          = "currentSong.url"
-          @timeupdate = "updateTime"
-          @ended      = "ended"
+                            ref         = "audioRef"
+                          :src          = "currentSong.url"
+                            @timeupdate = "updateTime"
+                            @ended      = "ended"
     >Your browser does not support the audio element.</audio>
   </div>
 </template>
@@ -144,7 +148,7 @@ export default {
   data () {
     return {
       // 标志位。歌曲已缓存好，可以播放了
-      songReady: false,
+      songCanplay: false,
       // 当前播放时间
       currentTime: 0,
       // 当前的歌词
@@ -290,9 +294,9 @@ export default {
      * 时间格式转换分钟，秒
      */
     timeFormat (time) {
-                  time = Math.floor(time);
-            const min  = Math.floor(time / 60);
-            const sec  = time % 60 < 10 ? "0" + (time % 60) : time % 60;
+                                                                        time = Math.floor(time);
+                                                                  const min  = Math.floor(time / 60);
+                                                                  const sec  = time % 60 < 10 ? "0" + (time % 60) : time % 60;
       return `${min}:${sec}`;
     },
     //=======歌曲播放操作========
@@ -300,13 +304,12 @@ export default {
       // if (!this.songCanplay) {
       //   return;
       // }
-
       this.setPlayingState(!this.playing);
 
       // 暂停时，歌词也暂停
-      // if (this.currentLyric) {
-      //   this.currentLyric.togglePlay();
-      // }
+      if (this.currentLyric) {
+        this.currentLyric.togglePlay();
+      }
     },
     next () {
       // 如果播放列表只要一条数据
@@ -339,19 +342,23 @@ export default {
       this.$refs.audioRef.currentTime = 0;
       this.$refs.audioRef.play();
 
-      // // 单曲循环时，歌词也单曲循环
-      // if (this.currentLyric) {
-      //   this.currentLyric.seek(0);
-      // }
+      // 单曲循环时，歌词重新归0
+      if (this.currentLyric) {
+        this.currentLyric.seek(0);
+      }
     },
     // props down，当进度改变了
     percentChange (newPercent) {
-      let currentTime                     = this.currentSong.duration * newPercent;
-          this.$refs.audioRef.currentTime = currentTime;
+      let currentTime                     = this.currentSong.duration * newPercent
+          this.$refs.audioRef.currentTime = currentTime
 
       // 进度改变后自动播放
       if (!this.playing) {
-        this.togglePlaying();
+        this.togglePlaying()
+      }
+
+      if (this.currentLyric) {
+        this.currentLyric.seek(currentTime * 1000)
       }
     },
     //改变播放模式
@@ -407,7 +414,7 @@ export default {
         this.$refs.lyricList.scrollTo(0, 0, 1000);
       }
 
-      // 当前歌词
+      // 当前小歌词区域显示
       this.playingLyric = txt;
     },
     // 滑动翻页
@@ -485,30 +492,26 @@ export default {
   },
   watch: {
     currentSong (newVal, oldVal) {
+      // console.log(this.currentSong)
+
       // 播放列表没有歌曲就退出
       if (!newVal.id) {
-        return;
-      }
-      //相同歌曲就跳出
-      if (newVal.id === oldVal.id) {
-        return;
-      }
-      this.$nextTick(() => {
-        this.$refs.audioRef.play();
-        //获取歌词
-        this._getLyric();
-      });
-      // 切歌时，停止当前歌词
-      if (this.currentLyric) {
-        this.currentLyric.stop();
+        return
       }
 
-      // DOM 更新了
-      clearTimeout(this.timer);
+      if (newVal.id === oldVal.id) {
+        return
+      }
+      // 切歌时，停止当前歌词
+      if (this.currentLyric) {
+        this.currentLyric.stop()
+      }
+      // DOM 更新了 解决微信端从后台切到前台重新播放问题
+      clearTimeout(this.timer)
       this.timer = setTimeout(() => {
-        this.$refs.audioRef.play();
-        // this._getLyric();
-      }, 1000);
+        this.$refs.audioRef.play()
+        this._getLyric()
+      }, 1000)
     },
     // 监听播放状态：播放 or 暂停
     playing (newVal) {
@@ -615,6 +618,18 @@ export default {
               height       : 100%;
               border-radius: 50%;
             }
+          }
+        }
+        .playing-lyric-wrapper {
+          width     : 80%;
+          margin    : 30px auto 0 auto;
+          overflow  : hidden;
+          text-align: center;
+          .playing-lyric {
+            height     : 20px;
+            line-height: 20px;
+            font-size  : @font-size-medium;
+            color      : @color-text-l;
           }
         }
       }
