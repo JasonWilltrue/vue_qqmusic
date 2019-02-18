@@ -13,9 +13,9 @@
       class  = "title"
     ></h1>
     <div
-        class = "bg-image"
-      :style  = "bgStyle"
-        ref   = "bgImageRef"
+              class = "bg-image"
+            :style  = "bgStyle"
+              ref   = "bgImageRef"
     >
       <!-- 随机播放全部 -->
       <div
@@ -42,12 +42,12 @@
       class = "bg-layer"
     ></div>
     <m-scroll
-        class        = "list"
-        ref          = "listRef"
-      :data          = "songs"
-      :probe-type    = "probeType"
-      :listen-scroll = "listenScroll"
-        @scroll      = "scroll"
+              class        = "list"
+              ref          = "listRef"
+            :data          = "songs"
+            :probe-type    = "probeType"
+            :listen-scroll = "listenScroll"
+              @scroll      = "scroll"
     >
       <div class="song-list-wrapper">
         <song-list
@@ -71,10 +71,12 @@ import MScroll from "base/scroll/scroll";
 import MLoadding from "base/loadding/loadding";
 import SongList from "base/songlist/songlist";
 import { mapActions } from "vuex";
+import { playlistMixin } from 'common/js/mixin.js'
 
 const TRANSFORMY_RESERVED = 40;  //顶部高度
 export default {
-  name: "musiclist",
+  mixins: [playlistMixin],
+  name  : "musiclist",
   data() {
     return {
       // 推层上移的距离
@@ -114,6 +116,12 @@ export default {
   },
   methods: {
     ...mapActions(["selectPlay", "randomPlay"]),
+     // 当有迷你播放器时，调整滚动底部距离
+    handlePlaylist(playlist) {
+      let bottom = playlist.length > 0 ? '60px' : ''
+      this.$refs.listRef.$el.style.bottom = bottom
+      this.$refs.listRef.refresh()
+    },
     scroll(pos) {
       this.scrollY = pos.y;
       console.log(this.scrollY);
@@ -166,8 +174,8 @@ export default {
       }
       // 不推到顶，留一部分
       if (newVal < this.minTranslationY) {
-                                    zIndex         = 10;
-        this.$refs.bgImageRef.style["padding-top"] = 0;
+                                                                                                                        zIndex         = 10;
+                                                                                            this.$refs.bgImageRef.style["padding-top"] = 0;
 
         this.$refs.bgImageRef.style["height"] = `${TRANSFORMY_RESERVED}px`;
         // 隐藏 随机播放全部 按钮
@@ -178,11 +186,11 @@ export default {
         // 显示 随机播放全部 按钮
         this.$refs.playRef.style["display"] = "block";
       }
-      this.$refs.bgImageRef.style["z-index"]               = zIndex;
-      this.$refs.bgImageRef.style["transform"]             = `scale(${scale})`;
-      this.$refs.bgImageRef.style["webkitTransform"]       = `scale(${scale})`;
-      this.$refs.filterRef.style ["backdrop-filter"]       = `blur(${blur}px)`;
-      this.$refs.filterRef.style ["webkitBackdrop-filter"] = `blur(${blur}px)`;
+      this.$refs.bgImageRef.style["z-index"]                = zIndex;
+      this.$refs.bgImageRef.style["transform"]              = `scale(${scale})`;
+      this.$refs.bgImageRef.style["webkitTransform"]        = `scale(${scale})`;
+      this.$refs.filterRef.style  ["backdrop-filter"]       = `blur(${blur}px)`;
+      this.$refs.filterRef.style  ["webkitBackdrop-filter"] = `blur(${blur}px)`;
     }
   },
   components: {

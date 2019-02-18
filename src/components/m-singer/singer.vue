@@ -1,14 +1,6 @@
 <template>
-  <div
-    class="singer"
-    ref="singerRef"
-  >
-    <m-listview
-      ref="scroll"
-      :data="singerList"
-      @select="selectSinger"
-    >
-    </m-listview>
+  <div class="singer" ref="singerRef">
+    <m-listview ref="listRef" :data="singerList" @select="selectSinger"></m-listview>
     <router-view></router-view>
   </div>
 </template>
@@ -19,29 +11,37 @@ import { ERROR_OK } from "api/config";
 import { createSinger } from "common/js/singerClass";
 import MListview from "base/listview/listview";
 import { mapMutations } from "vuex";
+import { playlistMixin } from 'common/js/mixin.js'
 const HOT_TITLE = "热门";
-const HOT_NUM = 10;
+const HOT_NUM   = 10;
 
 export default {
-  name: "singer",
-  data() {
+  mixins: [playlistMixin],
+  name  : "singer",
+  data () {
     return {
       singerList: []
     };
   },
-  created() {
+  created () {
     setTimeout(() => {
       this._getSingerList();
     }, 500);
   },
   methods: {
-    selectSinger(item) {
+     // 当有迷你播放器时，调整滚动底部距离
+    handlePlaylist(playlist) {
+      let bottom = playlist.length > 0 ? '60px' : ''
+      this.$refs.singerRef.style.bottom = bottom
+      this.$refs.listRef.refresh()
+    },
+    selectSinger (item) {
       this.$router.push({
         path: `/singer/${item.id}`
       });
       this.setSinger(item);
     },
-    _getSingerList() {
+    _getSingerList () {
       getSingerList().then(res => {
         if (res.code == ERROR_OK) {
           this.singerList = this._formatSingers(res.data.list);
@@ -50,7 +50,7 @@ export default {
     },
 
     // 重组 res.data.list 数据
-    _formatSingers(list) {
+    _formatSingers (list) {
       let map = {
         hot: {
           title: HOT_TITLE,
@@ -106,8 +106,8 @@ export default {
 @import "~@/common/less/mymixin.less";
 .singer {
   position: fixed;
-  top: 88px;
-  bottom: 0;
-  width: 100%;
+  top     : 88px;
+  bottom  : 0;
+  width   : 100%;
 }
 </style>

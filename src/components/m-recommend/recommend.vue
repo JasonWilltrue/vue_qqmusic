@@ -7,9 +7,9 @@
   >
     <!-- better-scroll 滚动组件，当请求到 lists 时才渲染 -->
     <m-scroll
-        ref   = "scroll"
-        class = "recommend-content"
-      :data   = "lists"
+              ref   = "scroll"
+              class = "recommend-content"
+            :data   = "lists"
     >
       <!--  :data   = "lists"可以写 图片加载慢导致滑动不到底部的问题 -->
       <div>
@@ -20,14 +20,14 @@
         >
           <m-slider>
             <div
-                v-for = "item in recommends"
-              :key    = "item.id"
+                      v-for = "item in recommends"
+                    :key    = "item.id"
             >
               <a :href="item.linkUrl">
                 <img
-                    @load = "loadImg"
-                  :src    = "item.picUrl"
-                    class = "needsclick"
+                          @load = "loadImg"
+                        :src    = "item.picUrl"
+                          class = "needsclick"
                 >
               </a>
             </div>
@@ -40,9 +40,9 @@
           <h1 class="list-title">热门歌单推荐</h1>
           <ul>
             <li
-                v-for = "item in lists"
-                class = "item"
-              :key    = "item.id"
+                      v-for = "item in lists"
+                      class = "item"
+                    :key    = "item.id"
             >
               <div class="icon">
                 <img
@@ -81,8 +81,11 @@ import MLoadding from "base/loadding/loadding";
 import { getRecommend, getDiscList } from "api/recommend";
 import { ERROR_OK } from "api/config";
 import MSlider from "base/slider/slider";
+import { playlistMixin } from 'common/js/mixin.js'
+
 export default {
-  name: "recommend",
+   mixins: [playlistMixin],
+   name  : "recommend",
   data() {
     return {
       recommends: [],
@@ -97,6 +100,12 @@ export default {
     this._getDiscList();
   },
   methods: {
+     // 当有迷你播放器时，调整滚动底部距离
+    handlePlaylist(playlist) {
+      let bottom = playlist.length > 0 ? '60px' : ''
+      this.$refs.recommendRef.style.bottom = bottom
+      this.$refs.scroll.refresh()
+    },
     _getRecommed() {
       getRecommend().then(res => {
         if (res.code === ERROR_OK) {

@@ -11,18 +11,18 @@
     <!-- 左侧歌手列表 -->
     <ul>
       <li
-          v-for = "group in data"
-          class = "list-group"
-        :key    = "group.title"
-          ref   = "listgroup"
+                v-for = "group in data"
+                class = "list-group"
+              :key    = "group.title"
+                ref   = "listgroup"
       >
         <h2 class="list-group-title">{{ group.title }}</h2>
         <ul>
           <li
-              v-for  = "item in group.items"
-              class  = "list-group-item"
-            :key     = "item.id"
-              @click = "selectItem(item)"
+                    v-for  = "item in group.items"
+                    class  = "list-group-item"
+                  :key     = "item.id"
+                    @click = "selectItem(item)"
           >
             <img
               v-lazy = "item.avatar"
@@ -41,11 +41,11 @@
     >
       <ul>
         <li
-            v-for     = "(item,index) in shortcutlist"
-          :key        = "index"
-          :data-index = "index"
-            class     = "item"
-          :class      = "{'current':currentIndex === index}"
+                  v-for     = "(item,index) in shortcutlist"
+                :key        = "index"
+                :data-index = "index"
+                  class     = "item"
+                :class      = "{'current':currentIndex === index}"
         >
           {{ item }}
         </li>
@@ -114,10 +114,14 @@ export default {
       }
       return this.data[this.currentIndex]
         ? this.data[this.currentIndex].title
-        :  "";
+        :     "";
     }
   },
   methods: {
+    // 对父亲提供的刷新 better-scroll 方法
+    refresh() {
+      this.$refs.listview.refresh()
+    },
     //点击歌手跳转歌手详情
     selectItem(item) {
       this.$emit("select", item);
