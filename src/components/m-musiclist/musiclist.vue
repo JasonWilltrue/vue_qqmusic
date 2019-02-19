@@ -1,65 +1,36 @@
 <template>
   <div class="music-list">
     <!-- 返回按钮 -->
-    <div
-      class  = "back"
-      @click = "back"
-    >
+    <div class="back" @click="back">
       <i class="icon-back"></i>
     </div>
     <!-- 顶部歌手名称 -->
-    <h1
-      v-html = "title"
-      class  = "title"
-    ></h1>
-    <div
-              class = "bg-image"
-            :style  = "bgStyle"
-              ref   = "bgImageRef"
-    >
+    <h1 v-html="title" class="title"></h1>
+    <div class="bg-image" :style="bgStyle" ref="bgImageRef">
       <!-- 随机播放全部 -->
-      <div
-        class = "play-wrapper"
-        ref   = "playRef"
-      >
-        <div
-          class  = "play"
-          @click = "playRandom"
-        >
+      <div class="play-wrapper" ref="playRef">
+        <div class="play" @click="playRandom">
           <i class="icon-play"></i>
           <span class="text">随机播放全部</span>
         </div>
       </div>
       <!-- 遮罩层 -->
-      <div
-        class = "filter"
-        ref   = "filterRef"
-      ></div>
+      <div class="filter" ref="filterRef"></div>
     </div>
     <!-- 推层 -->
-    <div
-      ref   = "layerRef"
-      class = "bg-layer"
-    ></div>
+    <div ref="layerRef" class="bg-layer"></div>
     <m-scroll
-              class        = "list"
-              ref          = "listRef"
-            :data          = "songs"
-            :probe-type    = "probeType"
-            :listen-scroll = "listenScroll"
-              @scroll      = "scroll"
+        class        = "list"
+        ref          = "listRef"
+      :data          = "songs"
+      :probe-type    = "probeType"
+      :listen-scroll = "listenScroll"
+        @scroll      = "scroll"
     >
       <div class="song-list-wrapper">
-        <song-list
-          :songs    = "songs"
-          :rank     = "rank"
-            @select = "selectItem"
-        ></song-list>
+        <song-list :songs="songs" :rank="rank" @select="selectItem"></song-list>
       </div>
-      <div
-        class  = "loadding"
-        v-show = "!songs.length"
-      >
+      <div class="loadding" v-show="!songs.length">
         <m-loadding></m-loadding>
       </div>
     </m-scroll>
@@ -77,7 +48,7 @@ const TRANSFORMY_RESERVED = 40;  //顶部高度
 export default {
   mixins: [playlistMixin],
   name  : "musiclist",
-  data() {
+  data () {
     return {
       // 推层上移的距离
       scrollY: -1
@@ -94,7 +65,7 @@ export default {
     },
     title: {
       type   : String,
-      default: []
+      default: ""
     },
     // 子组件排行奖杯图片
     rank: {
@@ -102,35 +73,35 @@ export default {
       default: false
     }
   },
-  created() {
+  created () {
     this.probeType    = 3;
     this.listenScroll = true;
   },
-  mounted() {
+  mounted () {
     //缓存图片高度
     this.bgImageHeight               = this.$refs.bgImageRef.clientHeight;
     this.minTranslationY             = -this.bgImageHeight + TRANSFORMY_RESERVED;
     this.$refs.listRef.$el.style.top = `${
       this.$refs.bgImageRef.clientHeight
-    }px`;
+      }px`;
   },
   methods: {
     ...mapActions(["selectPlay", "randomPlay"]),
-     // 当有迷你播放器时，调整滚动底部距离
-    handlePlaylist(playlist) {
+    // 当有迷你播放器时，调整滚动底部距离
+    handlePlaylist (playlist) {
       let bottom = playlist.length > 0 ? '60px' : ''
       this.$refs.listRef.$el.style.bottom = bottom
       this.$refs.listRef.refresh()
     },
-    scroll(pos) {
+    scroll (pos) {
       this.scrollY = pos.y;
       console.log(this.scrollY);
     },
     // 返回按钮
-    back() {
+    back () {
       this.$router.back();
     },
-    selectItem(item, index) {
+    selectItem (item, index) {
       //设置playlist fullscreen 等参数需要acitions派发
       console.log(this.songs[index]);
 
@@ -140,20 +111,20 @@ export default {
       });
     },
     // 随机播放全部按钮
-    playRandom() {
+    playRandom () {
       this.randomPlay({
         list: this.songs
       });
     }
   },
   computed: {
-    bgStyle() {
+    bgStyle () {
       return `background-image:url(${this.bgImage})`;
     }
   },
   watch: {
     // 推层动画逻辑
-    scrollY(newVal) {
+    scrollY (newVal) {
       let tranlateY = Math.max(this.minTranslationY, newVal);
       let zIndex    = 0;
       let scale     = 1;
@@ -174,8 +145,8 @@ export default {
       }
       // 不推到顶，留一部分
       if (newVal < this.minTranslationY) {
-                                                                                                                        zIndex         = 10;
-                                                                                            this.$refs.bgImageRef.style["padding-top"] = 0;
+                                    zIndex         = 10;
+        this.$refs.bgImageRef.style["padding-top"] = 0;
 
         this.$refs.bgImageRef.style["height"] = `${TRANSFORMY_RESERVED}px`;
         // 隐藏 随机播放全部 按钮
@@ -186,11 +157,11 @@ export default {
         // 显示 随机播放全部 按钮
         this.$refs.playRef.style["display"] = "block";
       }
-      this.$refs.bgImageRef.style["z-index"]                = zIndex;
-      this.$refs.bgImageRef.style["transform"]              = `scale(${scale})`;
-      this.$refs.bgImageRef.style["webkitTransform"]        = `scale(${scale})`;
-      this.$refs.filterRef.style  ["backdrop-filter"]       = `blur(${blur}px)`;
-      this.$refs.filterRef.style  ["webkitBackdrop-filter"] = `blur(${blur}px)`;
+      this.$refs.bgImageRef.style["z-index"]               = zIndex;
+      this.$refs.bgImageRef.style["transform"]             = `scale(${scale})`;
+      this.$refs.bgImageRef.style["webkitTransform"]       = `scale(${scale})`;
+      this.$refs.filterRef.style ["backdrop-filter"]       = `blur(${blur}px)`;
+      this.$refs.filterRef.style ["webkitBackdrop-filter"] = `blur(${blur}px)`;
     }
   },
   components: {

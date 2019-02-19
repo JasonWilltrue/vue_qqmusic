@@ -19,6 +19,9 @@ export default {
     };
   },
   created() {
+
+    console.log(this.songlist.dissid);
+    
     this._getSongList();
   },
   methods: {
@@ -26,6 +29,7 @@ export default {
     _getSongList () {
       // 禁止直接刷新详情页（获取不到歌单 id）
       if (!this.songlist.dissid) {
+        console.log('没有发现dissid');
         this.$router.push('/recommend')
         return
       }

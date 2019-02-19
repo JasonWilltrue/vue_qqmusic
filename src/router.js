@@ -8,8 +8,8 @@ import SingerDetail from "components/m-singerdetail/singerdetail"
 import SongList from "components/m-songlistdetail/songlistdetail"
 Vue.use(Router)
 
+
 export default new Router({
-  mode  : 'history',
   routes: [{
       path    : '/',
       redirect: '/recommend'
@@ -18,13 +18,10 @@ export default new Router({
       path     : '/recommend',
       name     : 'recommend',
       component: Recommend,
-      children : [
-          {
-            path     : ':id',
-            name     : 'songlist',
-            component: SongList
-          }
-      ]
+      children : [{
+        path     : ':id',
+        component: SongList
+      }]
     },
     {
       path     : '/singer',
@@ -32,7 +29,6 @@ export default new Router({
       component: Singer,
       children : [{
         path     : ':id',
-        name     : 'singerdetail',
         component: SingerDetail
       }]
     },
@@ -48,3 +44,51 @@ export default new Router({
     }
   ]
 })
+
+
+
+
+
+
+
+
+// export default new Router({
+//   mode  : 'history',
+//   routes: [{
+//       path    : '/',
+//       redirect: '/recommend'
+//     },
+//     {
+//       path     : '/recommend',
+//       name     : 'recommend',
+//       component: Recommend,
+//       children : [
+//           {
+//             path     : ':id',
+//             name     : 'songlist',
+//             component: SongList
+//           }
+//       ]
+//     },
+//     {
+//       path     : '/singer',
+//       name     : 'singer',
+//       component: Singer,
+//       children : [{
+//         path     : ':id',
+//         name     : 'singerdetail',
+//         component: SingerDetail
+//       }]
+//     },
+//     {
+//       path     : '/rank',
+//       name     : 'rank',
+//       component: Rank
+//     },
+//     {
+//       path     : '/search',
+//       name     : 'search',
+//       component: Search
+//     }
+//   ]
+// })

@@ -29,13 +29,10 @@ export default {
   methods: {
     _getSingerDetail() {
       // 禁止直接刷新详情页（获取不到歌手 id）
-      console.log("刷新执行数2222");
       if (!this.singer.id) {
-        alert("111111111");
-        // this.$router.push({
-        //   path: "/singer",
-        //   name: "singer"
-        // });
+        this.$router.push({
+          path: "/singer"
+        });
         return;
       }
       getSingerDetail(this.singer.id).then(res => {
