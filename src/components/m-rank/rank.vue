@@ -36,9 +36,13 @@ import MScroll from "base/scroll/scroll";
 import MLoadding from "base/loadding/loadding";
 import { ERROR_OK } from "api/config";
 import { getRankList } from "api/rank";
+import { playlistMixin } from 'common/js/mixin.js'
+import { mapMutations } from "vuex";
+
 export default {
-  name      : "rank",
-  components: {
+    mixins    : [playlistMixin],
+    name      : "rank",
+    components: {
     MScroll,
     MLoadding
   },
@@ -51,6 +55,15 @@ export default {
     this._getRankList()
   },
   methods: {
+     ...mapMutations({
+        setRankList: 'SET_RANKLIST'
+     }),
+     // 当有迷你播放器时，调整滚动底部距离
+    handlePlaylist (playlist) {
+      let bottom = playlist.length > 0 ? '60px' : ''
+      this.$refs.rankRef.style.bottom = bottom
+      this.$refs.scrollRef.refresh()
+    },
     _getRankList () {
       getRankList().then((res) => {
         if (res.code === ERROR_OK) {
@@ -70,7 +83,9 @@ export default {
       }
     },
     selectItem (item) {
-      console.log(item);
+      this.$router.push({path:`/rank/${item.id}`})
+      // 写入 vuex
+      this.setRankList(item)
     }
   },
 }

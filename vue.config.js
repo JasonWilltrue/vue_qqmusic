@@ -78,7 +78,31 @@ module.exports = {
           }).catch((e) => {
             console.log(e)
           })
-        })
+        });
+        app.get('/api/getRankDetail', function (req, res) {
+          var url = 'https://c.y.qq.com/v8/fcg-bin/fcg_v8_toplist_cp.fcg'
+          axios.get(url, {
+            headers: {
+              referer: 'https://y.qq.com/',
+              host   : 'c.y.qq.com'
+            },
+            params: req.query
+          }).then((response) => {
+            // jsonp 数据转为 json 数据
+            var ret = response.data
+            if (typeof ret === 'string') {
+              // var reg = /^\w+\(({[^()]+})\)$/
+              var reg     = /{.*}/
+              var matches = ret.match(reg)
+              if (matches) {
+                ret = JSON.parse(matches[0])
+              }
+            }
+            res.json(ret)
+          }).catch((e) => {
+            console.log(e)
+          })
+        });
     }
   },
   chainWebpack(config) {

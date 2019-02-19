@@ -1,71 +1,72 @@
+
 <template>
-  <transition name="slide">
-    <music-list :songs="songs" :title="title" :bg-image="bgImage"></music-list>
+  <transition name="slide" class="rank-detail">
+    <music-list :songs="songs" :title="title" :bg-image="bgImage" :rank="true"></music-list>
   </transition>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-import { getSongList } from "api/recommend";
+import { getRankDetail } from "api/rank";
 import { ERROR_OK } from "api/config";
 import { createSingerSong } from "common/js/song";
 import MusicList from "components/m-musiclist/musiclist";
 
-
 export default {
-
-  name: 'songlistdetail',
-   data() {
+  components: {
+    MusicList
+  },
+  data () {
     return {
       songs: []
-    };
-  },
-  created() {
-    this._getSongList();
+    }
   },
   methods: {
-     // 获取歌单数据
-    _getSongList () {
-      // 禁止直接刷新详情页（获取不到歌单 id）
-      if (!this.songlist.dissid) {
-        console.log('没有发现dissid');
-        this.$router.push('/recommend')
+    // 获取指定排行榜单详情
+    _getRankDetail () {
+      // 禁止直接刷新详情页（获取不到排行 id）
+      if (!this.rankList.id) {
+        this.$router.push('/rank')
         return
       }
 
-      getSongList(this.songlist.dissid).then((res) => {
+      getRankDetail(this.rankList.id).then((res) => {
         if (res.code === 0) {
-           console.log('推荐歌单',res)
-          this.songs = this._formatSongs(res.cdlist[0].songlist)
+          this.songs = this._formatSongs(res.songlist)
         }
       })
     },
-    // 重组 res.cdlist[0].songlist 数据
+    // 重组 res.songlist 数据
     _formatSongs (list) {
       let result = []
 
       list.forEach((item) => {
-        if (item.songid && item.albummid) {
-          result.push(createSingerSong(item))
+        if (item.data.songid && item.data.albummid) {
+          result.push(createSingerSong(item.data))
         }
       })
+
       return result
     }
   },
   computed: {
     // vuex, 使用对象展开运算符将 getters 混入 computed 对象中
-    ...mapGetters(['songlist']),
+    ...mapGetters(['rankList']),
     // 传入子组件
     title () {
-      return this.songlist.dissname
+      console.log(this.rankList);
+      return this.rankList.topTitle
     },
     // 传入子组件
     bgImage () {
-      return this.songlist.imgurl
+     if (this.songs.length) {
+        // 获取表单第一首歌曲封面
+        return this.songs[0].image
+      }
     }
   },
-  components: {
-    MusicList
+  created () {
+    this._getRankDetail()
   }
 }
 </script>

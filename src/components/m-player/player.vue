@@ -45,11 +45,11 @@
             <div class="lyric-wrapper">
               <div v-if="currentLyric">
                 <p
-                                        ref   = "lyricLine"
-                                        v-for = "(line, index) in currentLyric.lines"
-                                      :key    = "index"
-                                      :class  = "{ 'current':currentLyricLine === index }"
-                                        class = "text"
+                    ref   = "lyricLine"
+                    v-for = "(line, index) in currentLyric.lines"
+                  :key    = "index"
+                  :class  = "{ 'current':currentLyricLine === index }"
+                    class = "text"
                 >{{ line.txt }}</p>
               </div>
             </div>
@@ -97,9 +97,9 @@
           <img
             :src = "currentSong.image"
             alt
-                                  width  = "100%"
-                                  height = "100%"
-                                :class   = "playing ? 'play' : 'play pause'"
+              width  = "100%"
+              height = "100%"
+            :class   = "playing ? 'play' : 'play pause'"
           >
         </div>
         <div class="text">
@@ -109,9 +109,9 @@
         <div class="control">
           <progress-circle :percent="percent" :radius="32">
             <i
-                                    @click.stop = "togglePlaying"
-                                  :class        = "playing ? 'icon-pause-mini' : 'icon-play-mini'"
-                                    class       = "icon-mini"
+                @click.stop = "togglePlaying"
+              :class        = "playing ? 'icon-pause-mini' : 'icon-play-mini'"
+                class       = "icon-mini"
             ></i>
           </progress-circle>
         </div>
@@ -122,10 +122,10 @@
     </transition>
     <!-- 播放器 -->
     <audio
-                            ref         = "audioRef"
-                          :src          = "currentSong.url"
-                            @timeupdate = "updateTime"
-                            @ended      = "ended"
+        ref         = "audioRef"
+      :src          = "currentSong.url"
+        @timeupdate = "updateTime"
+        @ended      = "ended"
     >Your browser does not support the audio element.</audio>
   </div>
 </template>
@@ -138,6 +138,8 @@ import progressCircle from "base/progresscircle/progresscircle";
 import { utilsArray } from "common/js/utils";
 import Lyric from "lyric-parser"; // QQ音乐 歌词解析
 import MScroll from "base/scroll/scroll";
+
+
 export default {
   name      : "player",
   components: {
@@ -294,9 +296,9 @@ export default {
      * 时间格式转换分钟，秒
      */
     timeFormat (time) {
-                                                                        time = Math.floor(time);
-                                                                  const min  = Math.floor(time / 60);
-                                                                  const sec  = time % 60 < 10 ? "0" + (time % 60) : time % 60;
+            time = Math.floor(time);
+      const min  = Math.floor(time / 60);
+      const sec  = time % 60 < 10 ? "0" + (time % 60) : time % 60;
       return `${min}:${sec}`;
     },
     //=======歌曲播放操作========

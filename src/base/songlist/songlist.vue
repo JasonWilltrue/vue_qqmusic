@@ -2,10 +2,10 @@
   <div class="song-list">
     <ul>
       <li
-          v-for  = "(song,index) in songs"
-        :key     = "song.id"
-          class  = "item"
-          @click = "selectItem(song,index)"
+              v-for  = "(song,index) in songs"
+            :key     = "song.id"
+              class  = "item"
+              @click = "selectItem(song,index)"
       >
         <!-- 排行奖杯图片 -->
         <div
@@ -13,8 +13,8 @@
           v-show = "rank"
         >
           <span
-              class = "icon"
-            :class  = "getRankCls(index)"
+                  class = "icon"
+                :class  = "getRankCls(index)"
           >{{ getRankTxt(index) }}</span>
         </div>
         <!-- 内容 -->
@@ -59,7 +59,7 @@ export default {
     },
     // 排行奖杯文案
     getRankTxt(index) {
-      if (index > 0) {
+      if (index > 2) {
         return index + 1;
       }
     },
