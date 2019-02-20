@@ -1,8 +1,8 @@
 <!--
  * @Author      : Jerrychan
  * @Date        : 2019-01-30 14: 05: 28
- * @LastEditors : Jerrychan
- * @LastEditTime: 2019-01-31 10: 19: 12
+ * @LastEditors : Please set LastEditors
+ * @LastEditTime: 2019-02-20 14: 00: 43
  * @Description : 抽象的滚动组件
  -->
 <template>
@@ -75,6 +75,15 @@ export default {
           //向父组件传值
           _that.$emit("scroll", pos);
         });
+      }
+      //派发上啦刷新
+      if(this.pullup){
+        let me = this;
+        this.scroll.on("scrollEnd",()=>{
+           if(this.scroll.y <= this.scroll.maxScrollY +50){
+               me.$emit("scrollToEnd")
+           }
+        })
       }
     },
     enable() {

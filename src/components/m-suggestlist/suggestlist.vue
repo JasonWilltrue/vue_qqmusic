@@ -1,7 +1,18 @@
 <template>
-  <div class="suggest-list-wrapper" ref="scrollRef">
+  <m-scroll
+                      class        = "suggest-list-wrapper"
+                      ref          = "scrollRef"
+                    :data          = "result"
+                    :pullup        = "pullup"
+                      @scrollToEnd = "searchMore"
+  >
     <ul class="suggest-list">
-      <li class="suggest-item" v-for="(item,index) in result" :key="index">
+      <li
+                          class  = "suggest-item"
+                          v-for  = "(item,index) in result"
+                        :key     = "index"
+                          @click = "selectItem(item)"
+      >
         <div class="icon">
           <i :class="getIconCls(item)"></i>
         </div>
@@ -9,20 +20,31 @@
           <p class="text" v-html="getSingernameOrSongname(item)"></p>
         </div>
       </li>
+      <m-loadding v-show="hasMore" title></m-loadding>
     </ul>
-  </div>
+    <!-- 无数据组件 -->
+    <div class="no-result-wrapper" v-if="!hasMore && !result.length">
+      <no-result></no-result>
+    </div>
+  </m-scroll>
 </template>
 
 <script>
 import MScroll from "base/scroll/scroll";
 import MLoadding from "base/loadding/loadding";
+import NoResult from "base/no-result/noresult";
 import { search } from "api/search";
 import { createSingerSong } from "common/js/song";
-
-
+import { Singer } from 'common/js/singerClass'
+import { mapMutations,mapActions } from "vuex";
 const TYPE_SINGER = 'singer'
 export default {
-  name : 'suggestlist',
+  name      : 'suggestlist',
+  components: {
+    MScroll,
+    MLoadding,
+    NoResult
+  },
   props: {
     // 接受的检索值
     query: {
@@ -46,20 +68,25 @@ export default {
       // 标志位。是否加载完
       hasMore         : true,
       beforeScrollData: true,
-      pullup          : true
+      pullup          : true   //开启上啦刷新
     }
   },
   methods: {
+     // vuex
+    ...mapMutations({
+      'setSinger': 'SET_SINGER'
+    }),
+    ...mapActions(['insertSong']),
     _searchKey () {
       this.page    = 1
       this.hasMore = true
-      // this.$refs.scrollRef.scrollTo(0, 0)
+      this.$refs.scrollRef.scrollTo(0, 0)  //回到顶部
 
       search(this.query, this.page, this.perpage, this.zhida).then((res) => {
         if (res.code === 0) {
           //  console.log('搜索：', res.data)
           this.result = this._formatSearch(res.data)
-
+          this._checkMore(res.data)
         }
       })
     },
@@ -96,12 +123,49 @@ export default {
         return 'icon-music'
       }
     },
-    getSingernameOrSongname(item){
+    getSingernameOrSongname (item) {
       if (item.type === TYPE_SINGER) {
         return item.singername
       } else {
         return `${item.name}-${item.singer}`
       }
+    },
+    searchMore () {
+      if (!this.hasMore) {
+        return
+      }
+      this.page++
+      search(this.query, this.page, this.perpage, this.zhida).then((res) => {
+        if (res.code === 0) {
+          this.result = this.result.concat(this._formatSearch(res.data))
+          // 检查是否有更多数据
+          this._checkMore(res.data)
+        }
+      })
+    },
+    _checkMore (data) {
+      let song = data.song
+      console.log('总歌曲：' + song.totalnum + "当前数量：" + (song.curnum + song.curpage * this.perpage));
+      // 没有数据或最后一页   当前条目 + 当前页数 * 每页数据 > 总数量
+      if (!song.list.length || (song.curnum + song.curpage * this.perpage) > song.totalnum) {
+        this.hasMore = false
+      }
+    },
+    selectItem(item){
+      if (item.type === TYPE_SINGER) {
+        let singer = new Singer({
+          id  : item.singermid,
+          name: item.singername
+        })
+        this.$router.push({
+          path: `/search/${singer.id}`
+        })
+        // 使用vuex
+        this.setSinger(singer)
+      } else {
+        this.insertSong(item)
+      }
+      // this.$emit('select')
     }
   },
   watch: {

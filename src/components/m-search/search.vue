@@ -22,6 +22,7 @@
     <div class="search-result" ref="resultRef" v-show="query">
       <suggest-List ref="suggestRef" :query="query" :zhida="zhida"></suggest-List>
     </div>
+    <router-view></router-view>
   </div>
 </template>
 
