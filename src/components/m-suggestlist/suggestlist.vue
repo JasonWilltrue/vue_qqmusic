@@ -1,17 +1,19 @@
 <template>
   <m-scroll
-                      class        = "suggest-list-wrapper"
-                      ref          = "scrollRef"
-                    :data          = "result"
-                    :pullup        = "pullup"
-                      @scrollToEnd = "searchMore"
+                                class         = "suggest-list-wrapper"
+                                ref           = "scrollRef"
+                              :data           = "result"
+                              :pullup         = "pullup"
+                              :beforeScroll   = "beforeScrollData"
+                                @scrollToEnd  = "searchMore"
+                                @beforeScroll = "beforeScroll"
   >
     <ul class="suggest-list">
       <li
-                          class  = "suggest-item"
-                          v-for  = "(item,index) in result"
-                        :key     = "index"
-                          @click = "selectItem(item)"
+                                    class  = "suggest-item"
+                                    v-for  = "(item,index) in result"
+                                  :key     = "index"
+                                    @click = "selectItem(item)"
       >
         <div class="icon">
           <i :class="getIconCls(item)"></i>
@@ -67,8 +69,8 @@ export default {
       result: [],
       // 标志位。是否加载完
       hasMore         : true,
-      beforeScrollData: true,
-      pullup          : true   //开启上啦刷新
+      beforeScrollData: true,   //触发键盘手拢事件
+      pullup          : true    //开启上啦刷新
     }
   },
   methods: {
@@ -166,7 +168,11 @@ export default {
         this.insertSong(item)
       }
       // this.$emit('select')
-    }
+    },
+    // 滚动前触发事件
+    beforeScroll() {
+      this.$emit('beforeScroll')
+    },
   },
   watch: {
     query (newVal) {

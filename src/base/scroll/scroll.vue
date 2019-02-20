@@ -2,7 +2,7 @@
  * @Author      : Jerrychan
  * @Date        : 2019-01-30 14: 05: 28
  * @LastEditors : Please set LastEditors
- * @LastEditTime: 2019-02-20 14: 00: 43
+ * @LastEditTime: 2019-02-20 16: 46: 06
  * @Description : 抽象的滚动组件
  -->
 <template>
@@ -85,6 +85,12 @@ export default {
            }
         })
       }
+       // 滚动前是否触发事件
+      if (this.beforeScroll) {
+        this.scroll.on('beforeScrollStart', () => {
+          this.$emit('beforeScroll')
+        })
+      }
     },
     enable() {
       this.scroll && this.scroll.enable();
@@ -101,6 +107,9 @@ export default {
     scrollToElement() {
       this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments);
     }
+
+
+
   },
   watch: {
     data() {

@@ -2,7 +2,7 @@
   <div class="search">
     <div class="search-box-wrapper">
       <!-- 搜索框 -->
-      <search-box @query="onQueryChange"></search-box>
+      <search-box @query="onQueryChange" ref="searchBoxRef"></search-box>
       <div class="shortcut-wrapper" v-show="!query" ref="shortcutRef">
         <div class="shortcut" ref="scrollRef">
           <!-- 热门搜索 -->
@@ -20,7 +20,7 @@
     </div>
     <!-- 搜索结果 -->
     <div class="search-result" ref="resultRef" v-show="query">
-      <suggest-List ref="suggestRef" :query="query" :zhida="zhida"></suggest-List>
+      <suggest-List ref="suggestRef" :query="query" :zhida="zhida" @beforeScroll="blurInput"></suggest-List>
     </div>
     <router-view></router-view>
   </div>
@@ -63,7 +63,11 @@ export default {
           this.hotkey = res.data.hotkey.slice(0, 10)
         }
       })
-    }
+    },
+     // 滚动前触发事件
+    blurInput() {
+      this.$refs.searchBoxRef.blur()
+    },
   },
   watch: {
     query (newValue, oldValue) {
