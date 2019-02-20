@@ -9,8 +9,8 @@ import axios from 'axios'
 
 /**
  * jsonp 抓取热门搜索数据
- * 接口：https : //c.y.qq.com/splcloud/fcgi-bin/gethotkey.fcg
- * 提供方：https: //m.y.qq.com/#search
+ * 接口：https :   //c.y.qq.com/splcloud/fcgi-bin/gethotkey.fcg
+ * 提供方：https:   //m.y.qq.com/#search
  */
 export function getHotKey() {
   let url  = 'https://c.y.qq.com/splcloud/fcgi-bin/gethotkey.fcg'
@@ -21,4 +21,42 @@ export function getHotKey() {
     needNewCode: 1
   })
   return jsonp(url, data, opts)
+}
+
+
+/**
+ * jsonp 抓取搜索检索数据
+ * 接口：https :   //c.y.qq.com/soso/fcgi-bin/search_for_qq_cp
+ * 提供方：https:   //m.y.qq.com/#search
+ */
+export function search(query, page, perpage, zhida) {
+  // let url  = 'https://c.y.qq.com/soso/fcgi-bin/search_for_qq_cp'
+  let url  = "/api/search"
+  let data = Object.assign({}, commonParams, {
+    w: query,
+    p: page,
+    n: perpage,
+    perpage,
+    zhidaqu    : 1,
+    catZhida   : zhida ? 1: 0,
+    t          : 0,
+    flag       : 1,
+    ie         : 'utf-8',
+    sem        : 1,
+    aggr       : 0,
+    uin        : 0,
+    platform   : 'h5',
+    uid        : 0,
+    needNewCode: 1,
+    remoteplace: 'txt.mqq.all'
+  })
+   return axios.get(url, {
+       params: data
+     })
+     .then((res) => {
+       return Promise.resolve(res.data)
+     })
+     .catch((err) => {
+       console.log(err)
+     })
 }

@@ -15,9 +15,12 @@
             </ul>
           </div>
           <!-- 搜索历史 -->
-
         </div>
       </div>
+    </div>
+    <!-- 搜索结果 -->
+    <div class="search-result" ref="resultRef" v-show="query">
+      <suggest-List ref="suggestRef" :query="query" :zhida="zhida"></suggest-List>
     </div>
   </div>
 </template>
@@ -25,6 +28,7 @@
 <script>
 
 import SearchBox from 'base/searchbox/searchbox';
+import SuggestList from 'components/m-suggestlist/suggestlist'
 import { getHotKey } from "api/search";
 export default {
   name: "search",
@@ -43,11 +47,13 @@ export default {
     this._getHotKey()
   },
   components: {
-    SearchBox
+    SearchBox,
+    SuggestList
   },
   methods: {
     onQueryChange (v) {
-      this.query = query
+      console.log(v);
+      this.query = v
     },
     _getHotKey () {
       getHotKey().then((res) => {
@@ -74,22 +80,22 @@ export default {
   .search-box-wrapper {
     margin: 20px;
   }
-  .shortcut-wrapper{
+  .shortcut-wrapper {
     position: fixed;
     top     : 170px;
     bottom  : 0;
     width   : 100%;
-    .shortcut{
+    .shortcut {
       height  : 100%;
       overflow: hidden;
-      .hot-key{
+      .hot-key {
         margin: 0 20px 0 20px;
-        .title{
+        .title {
           margin-bottom: 20px;
           font-size    : @font-size-medium;
           color        : @color-text-l;
         }
-        .item{
+        .item {
           display   : inline-block;
           padding   : 5px 10px;
           margin    : 0 20px 10px 0;
@@ -97,11 +103,17 @@ export default {
           font-size : @font-size-medium;
           color     : @color-text-d;
         }
-        &.special{
+        &.special {
           color: rgba(255, 255, 255, 0.7);
         }
       }
     }
+  }
+  .search-result {
+    position: fixed;
+    width   : 100%;
+    top     : 178px;
+    bottom  : 0;
   }
 }
 </style>
