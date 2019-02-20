@@ -52,6 +52,7 @@ export const insertSong = function ({
   commit,
   state
 }, song) {
+  // 浅复制
   let playlist     = state.playlist.slice(0)
   let sequenceList = state.sequenceList.slice(0)
   let currentIndex = state.currentIndex
@@ -62,12 +63,14 @@ export const insertSong = function ({
   // 查询待添加的歌曲是否已在播放列表中
   let fpIndex = findIndex(playlist, song)
 
-  // 插入到当前索引
+  // 插入到当前索引 要插入的位置是当前索引的下一首
   currentIndex++
+  // 插入一首歌到当前索引位置
   playlist.splice(currentIndex, 0, song)
 
   // 如果待添加的歌曲已在播放列表中，删除原有歌曲
   if (fpIndex > -1) {
+    // 插入的序号大于 列表中的序号 【1，2，3，4】
     if (currentIndex > fpIndex) {
       playlist.splice(fpIndex, 1)
       currentIndex--
