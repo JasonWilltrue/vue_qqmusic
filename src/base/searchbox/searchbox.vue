@@ -7,7 +7,7 @@
 </template>
 
 <script>
-// import { myDOM } from '@/common/js/myutils.js'
+import { utilsDom } from 'common/js/utils'
 export default {
   name: "searchbox",
   data () {
@@ -37,9 +37,10 @@ export default {
     }
   },
   created(){
-    this.$watch('query', (newQuery) => {
+   // 节流 防止过多刷新
+    this.$watch('query', utilsDom.debounce((newQuery) => {
       this.$emit('query', newQuery)
-    })
+    }, 300))
   }
 }
 </script>
