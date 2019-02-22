@@ -1,19 +1,19 @@
 <template>
   <m-scroll
-          class         = "suggest-list-wrapper"
-          ref           = "scrollRef"
-        :data           = "result"
-        :pullup         = "pullup"
-        :beforeScroll   = "beforeScrollData"
-          @scrollToEnd  = "searchMore"
-          @beforeScroll = "beforeScroll"
+              class         = "suggest-list-wrapper"
+              ref           = "scrollRef"
+            :data           = "result"
+            :pullup         = "pullup"
+            :beforeScroll   = "beforeScrollData"
+              @scrollToEnd  = "searchMore"
+              @beforeScroll = "beforeScroll"
   >
     <ul class="suggest-list">
       <li
-              class  = "suggest-item"
-              v-for  = "(item,index) in result"
-            :key     = "index"
-              @click = "selectItem(item)"
+                  class  = "suggest-item"
+                  v-for  = "(item,index) in result"
+                :key     = "index"
+                  @click = "selectItem(item)"
       >
         <div class="icon">
           <i :class="getIconCls(item)"></i>
@@ -174,6 +174,10 @@ export default {
     beforeScroll () {
       this.$emit('beforeScroll')
     },
+    //重新计算高度
+    refresh() {
+      this.$refs.scrollRef.refresh()
+    }
   },
   watch: {
     query (newVal) {

@@ -12,10 +12,10 @@
             <h1 class="title">热门搜索</h1>
             <ul>
               <li
-                                      class  = "item"
-                                      v-for  = "(item,index) in hotkey"
-                                    :key     = "index"
-                                      @click = "addQuery(item.k)"
+                      class  = "item"
+                      v-for  = "(item,index) in hotkey"
+                    :key     = "index"
+                      @click = "addQuery(item.k)"
               >
                 <span>{{ item.k }}</span>
               </li>
@@ -37,11 +37,11 @@
     <!-- 搜索结果 -->
     <div class="search-result" ref="resultRef" v-show="query">
       <suggest-List
-                              ref           = "suggestRef"
-                            :query          = "query"
-                            :zhida          = "zhida"
-                              @select       = "saveHisory"
-                              @beforeScroll = "blurInput"
+              ref           = "suggestRef"
+            :query          = "query"
+            :zhida          = "zhida"
+              @select       = "saveHisory"
+              @beforeScroll = "blurInput"
       ></suggest-List>
     </div>
     <!-- 清空弹窗 -->
@@ -58,8 +58,11 @@ import MConfirm from "components/m-confirm/confirm";
 import { getHotKey } from "api/search";
 import SearchList from "base/searchlist/searchlist";
 import { mapActions, mapGetters } from "vuex";
+import { playlistMixin } from 'common/js/mixin.js'
+
 export default {
-  name: "search",
+  mixins: [playlistMixin],
+  name  : "search",
   data () {
     return {
       // 热门搜索关键系
@@ -83,6 +86,16 @@ export default {
   },
   methods: {
     ...mapActions(['saveHistory', 'delHistory', 'clearHistory']),
+    // 当有迷你播放器时，调整滚动底部距离
+    handlePlaylist(playlist) {
+      let bottom = playlist.length > 0 ? '60px' : ''
+      
+      this.$refs.shortcutRef.style.bottom = bottom
+      this.$refs.scrollRef.refresh()
+
+      this.$refs.resultRef.style.bottom = bottom
+      this.$refs.suggestRef.refresh()
+    },
     onQueryChange (v) {
       console.log(v);
       this.query = v
@@ -130,13 +143,13 @@ export default {
   watch: {
     // 解决添加歌曲后不能滚动的问题
     query (newValue) {
-      console.log('💛值：',newValue);
-       if (!newValue) {
+      console.log('💛值：', newValue);
+      if (!newValue) {
         setTimeout(() => {
           this.$refs.scrollRef.refresh()
         }, 20)
       }
-      
+
     }
   },
 }
