@@ -3,17 +3,19 @@
     <div class="search-box-wrapper">
       <!-- 搜索框 -->
       <search-box @query="onQueryChange" ref="searchBoxRef"></search-box>
-      <div class="shortcut-wrapper" v-show="!query" ref="shortcutRef">
-        <div class="shortcut" ref="scrollRef">
+    </div>
+    <div class="shortcut-wrapper" v-show="!query" ref="shortcutRef">
+      <m-scroll class="shortcut" ref="scrollRef" :data="scrollData">
+        <div>
           <!-- 热门搜索 -->
           <div class="hot-key">
             <h1 class="title">热门搜索</h1>
             <ul>
               <li
-                class="item"
-                v-for="(item,index) in hotkey"
-                :key="index"
-                @click="addQuery(item.k)"
+                                      class  = "item"
+                                      v-for  = "(item,index) in hotkey"
+                                    :key     = "index"
+                                      @click = "addQuery(item.k)"
               >
                 <span>{{ item.k }}</span>
               </li>
@@ -29,18 +31,17 @@
             </h1>
             <search-list :searches="searchHistory" @select="addQuery" @delete="deleteHis"></search-list>
           </div>
-          <!-- 搜索历史 -->
         </div>
-      </div>
+      </m-scroll>
     </div>
     <!-- 搜索结果 -->
     <div class="search-result" ref="resultRef" v-show="query">
       <suggest-List
-        ref="suggestRef"
-        :query="query"
-        :zhida="zhida"
-        @select="saveHisory"
-        @beforeScroll="blurInput"
+                              ref           = "suggestRef"
+                            :query          = "query"
+                            :zhida          = "zhida"
+                              @select       = "saveHisory"
+                              @beforeScroll = "blurInput"
       ></suggest-List>
     </div>
     <!-- 清空弹窗 -->
@@ -50,7 +51,7 @@
 </template>
 
 <script>
-
+import MScroll from "base/scroll/scroll";
 import SearchBox from 'base/searchbox/searchbox';
 import SuggestList from 'components/m-suggestlist/suggestlist'
 import MConfirm from "components/m-confirm/confirm";
@@ -66,18 +67,19 @@ export default {
       // 搜索字段 (my-search-box -> my-search -> my-suggest-List)
       query: '',
       // 是否显示歌手
-      zhida: true,
+      zhida       : true,
       refreshDelay: 100
     }
-  },
-  created () {
-    this._getHotKey()
   },
   components: {
     SearchBox,
     SuggestList,
     SearchList,
-    MConfirm
+    MConfirm,
+    MScroll
+  },
+  created () {
+    this._getHotKey()
   },
   methods: {
     ...mapActions(['saveHistory', 'delHistory', 'clearHistory']),
@@ -112,7 +114,6 @@ export default {
     _getHotKey () {
       getHotKey().then((res) => {
         if (res.code === 0) {
-          console.log(res.data.hotkey)
           this.hotkey = res.data.hotkey.slice(0, 10)
         }
       })
@@ -122,13 +123,20 @@ export default {
   computed: {
     ...mapGetters(['searchHistory']),
     scrollData () {
-      console.log('搜索历史：', searchHistory);
+      console.log('搜索历史：', this.searchHistory);
       return this.hotkey.concat(this.searchHistory)
     }
   },
   watch: {
-    query (newValue, oldValue) {
-      console.log(newValue, oldValue);
+    // 解决添加歌曲后不能滚动的问题
+    query (newValue) {
+      console.log('💛值：',newValue);
+       if (!newValue) {
+        setTimeout(() => {
+          this.$refs.scrollRef.refresh()
+        }, 20)
+      }
+      
     }
   },
 }
@@ -144,26 +152,26 @@ export default {
   }
   .shortcut-wrapper {
     position: fixed;
-    top: 170px;
-    bottom: 0;
-    width: 100%;
+    top     : 170px;
+    bottom  : 0;
+    width   : 100%;
     .shortcut {
-      height: 100%;
+      height  : 100%;
       overflow: hidden;
       .hot-key {
         margin: 0 20px 0 20px;
         .title {
           margin-bottom: 20px;
-          font-size: @font-size-medium;
-          color: @color-text-l;
+          font-size    : @font-size-medium;
+          color        : @color-text-l;
         }
         .item {
-          display: inline-block;
-          padding: 5px 10px;
-          margin: 0 20px 10px 0;
+          display   : inline-block;
+          padding   : 5px 10px;
+          margin    : 0 20px 10px 0;
           background: @color-highlight-background;
-          font-size: @font-size-medium;
-          color: @color-text-d;
+          font-size : @font-size-medium;
+          color     : @color-text-d;
         }
         &.special {
           color: rgba(255, 255, 255, 0.7);
@@ -171,13 +179,13 @@ export default {
       }
       .search-history {
         position: relative;
-        margin: 0 20px 0 20px;
+        margin  : 0 20px 0 20px;
         .title {
-          display: flex;
+          display    : flex;
           align-items: center;
-          height: 40px;
-          font-size: @font-size-medium;
-          color: @color-text-l;
+          height     : 40px;
+          font-size  : @font-size-medium;
+          color      : @color-text-l;
           .text {
             flex: 1;
           }
@@ -186,7 +194,7 @@ export default {
             .extend-click();
             .icon-clear {
               font-size: @font-size-medium;
-              color: @color-text-d;
+              color    : @color-text-d;
             }
           }
         }
@@ -195,9 +203,9 @@ export default {
   }
   .search-result {
     position: fixed;
-    width: 100%;
-    top: 178px;
-    bottom: 0;
+    width   : 100%;
+    top     : 178px;
+    bottom  : 0;
   }
 }
 </style>

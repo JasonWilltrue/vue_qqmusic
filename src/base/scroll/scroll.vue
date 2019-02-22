@@ -2,7 +2,7 @@
  * @Author      : Jerrychan
  * @Date        : 2019-01-30 14: 05: 28
  * @LastEditors : Please set LastEditors
- * @LastEditTime: 2019-02-20 16: 46: 06
+ * @LastEditTime: 2019-02-22 14: 54: 03
  * @Description : 抽象的滚动组件
  -->
 <template>
