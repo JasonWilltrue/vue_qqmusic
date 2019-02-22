@@ -1,19 +1,19 @@
 <template>
   <m-scroll
-                                class         = "suggest-list-wrapper"
-                                ref           = "scrollRef"
-                              :data           = "result"
-                              :pullup         = "pullup"
-                              :beforeScroll   = "beforeScrollData"
-                                @scrollToEnd  = "searchMore"
-                                @beforeScroll = "beforeScroll"
+          class         = "suggest-list-wrapper"
+          ref           = "scrollRef"
+        :data           = "result"
+        :pullup         = "pullup"
+        :beforeScroll   = "beforeScrollData"
+          @scrollToEnd  = "searchMore"
+          @beforeScroll = "beforeScroll"
   >
     <ul class="suggest-list">
       <li
-                                    class  = "suggest-item"
-                                    v-for  = "(item,index) in result"
-                                  :key     = "index"
-                                    @click = "selectItem(item)"
+              class  = "suggest-item"
+              v-for  = "(item,index) in result"
+            :key     = "index"
+              @click = "selectItem(item)"
       >
         <div class="icon">
           <i :class="getIconCls(item)"></i>
@@ -38,7 +38,7 @@ import NoResult from "base/no-result/noresult";
 import { search } from "api/search";
 import { createSingerSong } from "common/js/song";
 import { Singer } from 'common/js/singerClass'
-import { mapMutations,mapActions } from "vuex";
+import { mapMutations, mapActions } from "vuex";
 const TYPE_SINGER = 'singer'
 export default {
   name      : 'suggestlist',
@@ -74,7 +74,7 @@ export default {
     }
   },
   methods: {
-     // vuex
+    // vuex
     ...mapMutations({
       'setSinger': 'SET_SINGER'
     }),
@@ -153,7 +153,7 @@ export default {
         this.hasMore = false
       }
     },
-    selectItem(item){
+    selectItem (item) {
       if (item.type === TYPE_SINGER) {
         let singer = new Singer({
           id  : item.singermid,
@@ -167,10 +167,11 @@ export default {
       } else {
         this.insertSong(item)
       }
-      // this.$emit('select')
+      //派发一个事件保存历史
+      this.$emit('select')
     },
     // 滚动前触发事件
-    beforeScroll() {
+    beforeScroll () {
       this.$emit('beforeScroll')
     },
   },

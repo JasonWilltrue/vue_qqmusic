@@ -3,6 +3,11 @@
  * vuex 操作顺序：state.js -> mutations-type.js -> mutations.js -> getters.js
  */
 import playMode from "common/js/config";
+import {
+  getStorage
+} from "common/js/cache";
+
+
 const state = {
   // 歌手信息
   singer: {},
@@ -23,10 +28,11 @@ const state = {
   // 歌曲排行数据
   rankList: {},
   // 搜索结果
-  // searchHistory: getStorage(),
-  // // 播放历史（最近播放）
+  // searchHistory: [],
+  searchHistory: getStorage(),
+  // 播放历史（最近播放）
   // playHistory: getPlayStorage(),
-  // // 我的收藏
+  // 我的收藏
   // favoriteList: getFavorite()
 }
 

@@ -2,6 +2,12 @@ import * as types from './mutations-types.js'
 import {
   utilsArray
 } from "common/js/utils";
+import {
+  localSave
+} from "common/js/cache";
+
+
+
 
 //找到新列表中的指定索引
 function findIndex(list, song) {
@@ -102,4 +108,35 @@ export const insertSong = function ({
   commit(types.SET_CURRENT_INDEX, currentIndex)
   commit(types.SET_PLAYING_STATE, true)
   commit(types.SET_FULL_SCREEN, true)
+}
+
+
+/**
+ * 保存搜索历史
+ * @param  {[type]} query          搜索关键词
+ */
+export const saveHistory = function ({
+  commit
+}, query) {
+  commit(types.SET_SEARCHHISTORY, localSave(query))
+}
+
+/**
+ * 删除单个搜索历史
+ * @param  {[type]} query          搜索关键词
+ */
+export const delHistory = function ({
+  commit
+}, query) {
+  commit(types.SET_SEARCHHISTORY, localDel(query))
+}
+
+/**
+ * 删除全部搜索历史
+ * @param  {[type]} query          搜索关键词
+ */
+export const clearHistory = function ({
+  commit
+}) {
+  commit(types.SET_SEARCHHISTORY, localClear())
 }

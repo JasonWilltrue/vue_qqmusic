@@ -21,6 +21,7 @@ export function getHotKey() {
     needNewCode: 1
   })
   return jsonp(url, data, opts)
+
 }
 
 
