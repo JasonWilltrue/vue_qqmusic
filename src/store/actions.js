@@ -3,7 +3,7 @@ import {
   utilsArray
 } from "common/js/utils";
 import {
-  localSave
+  localSave, localDel, localClear
 } from "common/js/cache";
 
 
