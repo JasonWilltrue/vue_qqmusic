@@ -1,7 +1,7 @@
 <template>
   <transition name="list-fade">
-    <div class="playlist">
-      <div class="list-wrapper">
+    <div class="playlist" @click="hide" v-show="showFlag">
+      <div class="list-wrapper" @click.stop>
         <!-- 头部操作 -->
         <div class="list-header">
           <h1 class="title">
@@ -13,11 +13,11 @@
           </h1>
         </div>
         <!-- 中部列表 -->
-        <div class="list-content">
+        <div class="list-content" ref="scrollRef">
           <ul>
-            <li class="item">
-              <i class="current"></i>
-              <span class="text"></span>
+            <li class="item" v-for="item in sequenceList" :key="item.id">
+              <i class="current" :class="getCurrentIcon(item)"></i>
+              <span class="text">{{ item.name }}</span>
               <span class="like">
                 <i class="icon-not-favorite"></i>
               </span>
@@ -35,7 +35,7 @@
           </div>
         </div>
 
-        <div class="list-close">
+        <div class="list-close" @click="hide">
           <span>关闭</span>
         </div>
       </div>
@@ -44,8 +44,49 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from "vuex";
 export default {
-  name: "playlist"
+  name: "playlist",
+  data () {
+    return {
+      showFlag    : false,
+      refreshDelay: 100
+    }
+  },
+  methods: {
+    show () {
+      this.showFlag = true
+    },
+    hide () {
+      this.showFlag = false
+    },
+     // 当前播放歌曲前面的图标
+    getCurrentIcon(item) {
+      if (this.currentSong.id === item.id) {
+        return 'icon-play'
+      }
+      return ''
+    },
+   
+  },
+  computed: {
+    ...mapGetters(['sequenceList', 'currentSong', 'mode', 'playlist', 'favoriteList']),
+     // 播放模式对应图标字体
+    iconMode () {
+      let cls = ''
+      if (this.mode === 0) {
+        cls = 'icon-sequence'
+      } else if (this.mode === 1) {
+        cls = 'icon-loop'
+      } else if (this.mode === 2) {
+        cls = 'icon-random'
+      } else {
+        cls = ''
+      }
+      return cls
+    },
+  },
+
 }
 </script>
 
