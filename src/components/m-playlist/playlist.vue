@@ -13,9 +13,14 @@
           </h1>
         </div>
         <!-- 中部列表 -->
-        <div class="list-content" ref="scrollRef">
+        <m-scroll class="list-content" ref="scrollRef" :data="sequenceList">
           <ul>
-            <li class="item" v-for="item in sequenceList" :key="item.id">
+            <li
+                    class  = "item"
+                    v-for  = "(item,index) in sequenceList"
+                  :key     = "item.id"
+                    @click = "selectItem(item, index)"
+            >
               <i class="current" :class="getCurrentIcon(item)"></i>
               <span class="text">{{ item.name }}</span>
               <span class="like">
@@ -26,7 +31,7 @@
               </span>
             </li>
           </ul>
-        </div>
+        </m-scroll>
         <!-- 添加按钮 -->
         <div class="list-operate">
           <div class="add">
@@ -45,6 +50,7 @@
 
 <script>
 import { mapGetters, mapMutations } from "vuex";
+import MScroll from "base/scroll/scroll";
 export default {
   name: "playlist",
   data () {
@@ -53,25 +59,51 @@ export default {
       refreshDelay: 100
     }
   },
+  components: {
+    MScroll
+  },
   methods: {
+    ...mapMutations({
+      setMode        : 'SET_MODE',
+      setCurrentIndex: 'SET_CURRENT_INDEX',
+      setPlayingState: 'SET_PLAYING_STATE',
+      setPlayList    : 'SET_PLAYLIST'
+    }),
     show () {
       this.showFlag = true
+      // show的时候列表显示之后才能被正常计算 延迟计算 better-scroll
+      setTimeout(() => {
+        this.$refs.scrollRef.refresh()
+      }, 20)
     },
     hide () {
       this.showFlag = false
     },
-     // 当前播放歌曲前面的图标
-    getCurrentIcon(item) {
+    // 当前播放歌曲前面的图标
+    getCurrentIcon (item) {
       if (this.currentSong.id === item.id) {
         return 'icon-play'
       }
       return ''
     },
-   
+    //切歌
+    selectItem(item,index){
+       // 随机播放
+      if (this.mode === 2) {
+        index = this.playlist.findIndex((song) => {
+          return song.id === item.id
+        })
+      }
+
+      this.setCurrentIndex(index)
+
+      // 如果是暂停，切歌后自动播放
+      this.setPlayingState(true)
+    }
   },
   computed: {
     ...mapGetters(['sequenceList', 'currentSong', 'mode', 'playlist', 'favoriteList']),
-     // 播放模式对应图标字体
+    // 播放模式对应图标字体
     iconMode () {
       let cls = ''
       if (this.mode === 0) {
