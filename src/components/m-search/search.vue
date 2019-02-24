@@ -1,3 +1,4 @@
+/**搜索框组件*/
 <template>
   <div class="search">
     <div class="search-box-wrapper">
@@ -12,10 +13,10 @@
             <h1 class="title">热门搜索</h1>
             <ul>
               <li
-                      class  = "item"
-                      v-for  = "(item,index) in hotkey"
-                    :key     = "index"
-                      @click = "addQuery(item.k)"
+                  class  = "item"
+                  v-for  = "(item,index) in hotkey"
+                :key     = "index"
+                  @click = "addQuery(item.k)"
               >
                 <span>{{ item.k }}</span>
               </li>
@@ -37,11 +38,11 @@
     <!-- 搜索结果 -->
     <div class="search-result" ref="resultRef" v-show="query">
       <suggest-List
-              ref           = "suggestRef"
-            :query          = "query"
-            :zhida          = "zhida"
-              @select       = "saveHisory"
-              @beforeScroll = "blurInput"
+          ref           = "suggestRef"
+        :query          = "query"
+        :zhida          = "zhida"
+          @select       = "saveHisory"
+          @beforeScroll = "blurInput"
       ></suggest-List>
     </div>
     <!-- 清空弹窗 -->
@@ -87,9 +88,9 @@ export default {
   methods: {
     ...mapActions(['saveHistory', 'delHistory', 'clearHistory']),
     // 当有迷你播放器时，调整滚动底部距离
-    handlePlaylist(playlist) {
+    handlePlaylist (playlist) {
       let bottom = playlist.length > 0 ? '60px' : ''
-      
+
       this.$refs.shortcutRef.style.bottom = bottom
       this.$refs.scrollRef.refresh()
 
