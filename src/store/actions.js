@@ -140,3 +140,10 @@ export const clearHistory = function ({
 }) {
   commit(types.SET_SEARCHHISTORY, localClear())
 }
+
+//从播放列表中删除歌曲
+export const deleteSong = function({commit,state},song) {
+  //浅复制
+  let playlist = state.playlist.slice(0);
+  // ...todo
+}

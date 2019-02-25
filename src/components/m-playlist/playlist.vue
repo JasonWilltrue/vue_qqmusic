@@ -5,7 +5,7 @@
         <!-- 头部操作 -->
         <div class="list-header">
           <h1 class="title">
-            <i class="icon"></i>
+            <i class="icon" :class="iconMode"></i>
             <span class="text"></span>
             <span class="clear">
               <i class="icon-clear"></i>
@@ -16,6 +16,7 @@
         <m-scroll class="list-content" ref="scrollRef" :data="sequenceList">
           <ul>
             <li
+                    ref    = "listRef"
                     class  = "item"
                     v-for  = "(item,index) in sequenceList"
                   :key     = "item.id"
@@ -26,7 +27,7 @@
               <span class="like">
                 <i class="icon-not-favorite"></i>
               </span>
-              <span class="detlete">
+              <span class="delete" @click.stop="deleteOne(item)">
                 <i class="icon-delete"></i>
               </span>
             </li>
@@ -69,12 +70,15 @@ export default {
       setPlayingState: 'SET_PLAYING_STATE',
       setPlayList    : 'SET_PLAYLIST'
     }),
+     ...mapActions(['deleteSong']),
     show () {
       this.showFlag = true
       // show的时候列表显示之后才能被正常计算 延迟计算 better-scroll
       setTimeout(() => {
         this.$refs.scrollRef.refresh()
       }, 20)
+      //滚动到第一个
+      this.scrollToCurrent(this.currentSong)
     },
     hide () {
       this.showFlag = false
@@ -87,18 +91,33 @@ export default {
       return ''
     },
     //切歌
-    selectItem(item,index){
-       // 随机播放
+    selectItem (item, index) {
+      // 随机播放
       if (this.mode === 2) {
         index = this.playlist.findIndex((song) => {
           return song.id === item.id
         })
       }
-
       this.setCurrentIndex(index)
 
       // 如果是暂停，切歌后自动播放
       this.setPlayingState(true)
+    },
+    // 切歌后滚动至第一个
+    scrollToCurrent (current) {
+      let index = this.sequenceList.findIndex(song => {
+        return song.id === current.id
+      })
+      let songIndex = this.$refs.listRef[index];
+      this.$refs.scrollRef.scrollToElement(songIndex, 300);
+    },
+    //删除图标
+    deleteOne (item) {
+      this.deleteSong(item)
+      //没有歌曲则关闭歌曲列表
+      if (!this.playlist.length) {
+        this.showFlag = false
+      }
     }
   },
   computed: {
@@ -117,6 +136,20 @@ export default {
       }
       return cls
     },
+  },
+  watch: {
+    // 切歌后滚动至第一个
+    currentSong (newVal, oldVal) {
+      if (!newVal.id || !oldVal.id) {
+        return
+      }
+
+      if (!this.showFlag || newVal.id === oldVal.id) {
+        return
+      }
+
+      this.scrollToCurrent(newVal)
+    }
   },
 
 }
