@@ -7,20 +7,20 @@
           <h1 class="title">
             <i class="icon" :class="iconMode"></i>
             <span class="text"></span>
-            <span class="clear">
+            <span class="clear" @click="showConfirm">
               <i class="icon-clear"></i>
             </span>
           </h1>
         </div>
         <!-- 中部列表 -->
         <m-scroll class="list-content" ref="scrollRef" :data="sequenceList">
-          <ul>
+          <transition-group tag="ul" name="list">
             <li
-                    ref    = "listRef"
-                    class  = "item"
-                    v-for  = "(item,index) in sequenceList"
-                  :key     = "item.id"
-                    @click = "selectItem(item, index)"
+                ref    = "listRef"
+                class  = "item"
+                v-for  = "(item,index) in sequenceList"
+              :key     = "item.id"
+                @click = "selectItem(item, index)"
             >
               <i class="current" :class="getCurrentIcon(item)"></i>
               <span class="text">{{ item.name }}</span>
@@ -31,7 +31,7 @@
                 <i class="icon-delete"></i>
               </span>
             </li>
-          </ul>
+          </transition-group>
         </m-scroll>
         <!-- 添加按钮 -->
         <div class="list-operate">
@@ -45,13 +45,16 @@
           <span>关闭</span>
         </div>
       </div>
+      <!-- 清空弹窗 -->
+      <m-confirm ref="confirmRef" @confirm="confirm" @cancel="cancel"></m-confirm>
     </div>
   </transition>
 </template>
 
 <script>
-import { mapGetters, mapMutations } from "vuex";
+import { mapGetters, mapMutations, mapActions } from "vuex";
 import MScroll from "base/scroll/scroll";
+import MConfirm from "components/m-confirm/confirm";
 export default {
   name: "playlist",
   data () {
@@ -61,7 +64,8 @@ export default {
     }
   },
   components: {
-    MScroll
+    MScroll,
+    MConfirm
   },
   methods: {
     ...mapMutations({
@@ -70,7 +74,7 @@ export default {
       setPlayingState: 'SET_PLAYING_STATE',
       setPlayList    : 'SET_PLAYLIST'
     }),
-     ...mapActions(['deleteSong']),
+    ...mapActions(['deleteSong', 'deleteSongList']),
     show () {
       this.showFlag = true
       // show的时候列表显示之后才能被正常计算 延迟计算 better-scroll
@@ -118,7 +122,17 @@ export default {
       if (!this.playlist.length) {
         this.showFlag = false
       }
-    }
+    },
+    showConfirm () {
+      this.$refs.confirmRef.show()
+    },
+    // confirm 清空对话框
+    confirm () {
+      this.deleteSongList()
+    },
+    cancel () {
+      return
+    },
   },
   computed: {
     ...mapGetters(['sequenceList', 'currentSong', 'mode', 'playlist', 'favoriteList']),
@@ -140,6 +154,7 @@ export default {
   watch: {
     // 切歌后滚动至第一个
     currentSong (newVal, oldVal) {
+      //删除歌曲如果删除了最后一首歌曲newval取不到值
       if (!newVal.id || !oldVal.id) {
         return
       }

@@ -3,7 +3,9 @@ import {
   utilsArray
 } from "common/js/utils";
 import {
-  localSave, localDel, localClear
+  localSave,
+  localDel,
+  localClear
 } from "common/js/cache";
 
 
@@ -142,8 +144,44 @@ export const clearHistory = function ({
 }
 
 //从播放列表中删除歌曲
-export const deleteSong = function({commit,state},song) {
+export const deleteSong = function ({
+  commit,
+  state
+}, song) {
   //浅复制
-  let playlist = state.playlist.slice(0);
-  // ...todo
+  let playlist     = state.playlist.slice(0);
+  let sequenceList = state.sequenceList.slice(0)
+  let currentIndex = state.currentIndex
+
+  //找到这首歌
+  let pIndex = findIndex(playlist, song);
+  //删除这首歌
+  playlist.splice(pIndex, 1)
+
+  // 找到sequenceList 中的位置
+  let sIndex = findIndex(sequenceList, song)
+  //删除歌曲
+  sequenceList.splice(sIndex, 1)
+  //  ⭐️⭐️判断当前这个歌曲索引是在被删除的歌曲之后 或者 删除最后一首歌
+  if (currentIndex > pIndex || currentIndex === playlist.length) {
+    currentIndex--
+  }
+  
+  commit(types.SET_PLAYLIST, playlist)
+  commit(types.SET_SEQUENCE_LIST, sequenceList)
+  commit(types.SET_CURRENT_INDEX, currentIndex)
+  //判断歌曲列表是否全部删除完 true 或false 歌曲暂停
+  let playingState = playlist.length > 0
+  commit(types.SET_PLAYING_STATE, playingState)
+}
+
+// 清空播放列表
+export const deleteSongList = function ({
+  commit,
+  state
+}, song) {
+  commit(types.SET_PLAYLIST, [])
+  commit(types.SET_SEQUENCE_LIST, [])
+  commit(types.SET_CURRENT_INDEX, -1)
+  commit(types.SET_PLAYING_STATE, false)
 }
