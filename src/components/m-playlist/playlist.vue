@@ -5,7 +5,7 @@
         <!-- 头部操作 -->
         <div class="list-header">
           <h1 class="title">
-            <i class="icon" :class="iconMode"></i>
+            <i class="icon" :class="iconMode" @click="changeMode"></i>
             <span class="text"></span>
             <span class="clear" @click="showConfirm">
               <i class="icon-clear"></i>
@@ -16,11 +16,11 @@
         <m-scroll class="list-content" ref="scrollRef" :data="sequenceList">
           <transition-group tag="ul" name="list">
             <li
-                ref    = "listRef"
-                class  = "item"
-                v-for  = "(item,index) in sequenceList"
-              :key     = "item.id"
-                @click = "selectItem(item, index)"
+                          ref    = "listRef"
+                          class  = "item"
+                          v-for  = "(item,index) in sequenceList"
+                        :key     = "item.id"
+                          @click = "selectItem(item, index)"
             >
               <i class="current" :class="getCurrentIcon(item)"></i>
               <span class="text">{{ item.name }}</span>
@@ -55,6 +55,7 @@
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import MScroll from "base/scroll/scroll";
 import MConfirm from "components/m-confirm/confirm";
+import { utilsArray } from "common/js/utils";
 export default {
   name: "playlist",
   data () {
@@ -132,6 +133,27 @@ export default {
     },
     cancel () {
       return
+    },
+    // 改变播放模式，实质是修改 playlist
+    changeMode () {
+      let mode = (this.mode + 1) % 3;
+      this.setMode(mode); //派发action
+      //修改播放列表
+      let newList = null;
+      if (mode === 2) {
+        // 随机播放
+        newList = utilsArray.shuffle(this.sequenceList);
+      } else {
+        // 顺序播放、单曲循环
+        newList = this.sequenceList;
+      }
+
+      // 调整当前歌曲的索引
+      let index = newList.findIndex(item => {
+        return item.id === this.currentSong.id;
+      });
+      this.setCurrentIndex(index);
+      this.setPlayList(newList);
     },
   },
   computed: {

@@ -8,9 +8,6 @@ import {
   localClear
 } from "common/js/cache";
 
-
-
-
 //找到新列表中的指定索引
 function findIndex(list, song) {
   return list.findIndex((item) => {
