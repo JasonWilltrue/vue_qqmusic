@@ -16,11 +16,11 @@
         <m-scroll class="list-content" ref="scrollRef" :data="sequenceList">
           <transition-group tag="ul" name="list">
             <li
-                            ref    = "listRef"
-                            class  = "item"
-                            v-for  = "(item,index) in sequenceList"
-                          :key     = "item.id"
-                            @click = "selectItem(item, index)"
+                                          ref    = "listRef"
+                                          class  = "item"
+                                          v-for  = "(item,index) in sequenceList"
+                                        :key     = "item.id"
+                                          @click = "selectItem(item, index)"
             >
               <i class="current" :class="getCurrentIcon(item)"></i>
               <span class="text">{{ item.name }}</span>
@@ -35,7 +35,7 @@
         </m-scroll>
         <!-- 添加按钮 -->
         <div class="list-operate">
-          <div class="add">
+          <div class="add" @click="showAddSong" >
             <i class="icon-add"></i>
             <span class="text">添加歌曲到队列</span>
           </div>
@@ -47,6 +47,8 @@
       </div>
       <!-- 清空弹窗 -->
       <m-confirm ref="confirmRef" @confirm="confirm" @cancel="cancel"></m-confirm>
+    <!-- 添加歌曲列表页面 -->
+    <add-song ref="addSongRef"></add-song>
     </div>
   </transition>
 </template>
@@ -55,6 +57,7 @@
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import MScroll from "base/scroll/scroll";
 import MConfirm from "components/m-confirm/confirm";
+import AddSong from "components/m-addsong/addsong";
 import { utilsArray } from "common/js/utils";
 export default {
   name: "playlist",
@@ -66,7 +69,8 @@ export default {
   },
   components: {
     MScroll,
-    MConfirm
+    MConfirm,
+    AddSong
   },
   methods: {
     ...mapMutations({
@@ -155,6 +159,10 @@ export default {
       this.setCurrentIndex(index);
       this.setPlayList(newList);
     },
+    //跳转添加歌曲列表页面
+    showAddSong() {
+      this.$refs.addSongRef.show()
+    }
   },
   computed: {
     ...mapGetters(['sequenceList', 'currentSong', 'mode', 'playlist', 'favoriteList']),
