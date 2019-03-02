@@ -6,7 +6,7 @@
         <div class="list-header">
           <h1 class="title">
             <i class="icon" :class="iconMode" @click="changeMode"></i>
-            <span class="text"></span>
+            <span class="text">{{ modeText }}</span>
             <span class="clear" @click="showConfirm">
               <i class="icon-clear"></i>
             </span>
@@ -16,11 +16,11 @@
         <m-scroll class="list-content" ref="scrollRef" :data="sequenceList">
           <transition-group tag="ul" name="list">
             <li
-                          ref    = "listRef"
-                          class  = "item"
-                          v-for  = "(item,index) in sequenceList"
-                        :key     = "item.id"
-                          @click = "selectItem(item, index)"
+                            ref    = "listRef"
+                            class  = "item"
+                            v-for  = "(item,index) in sequenceList"
+                          :key     = "item.id"
+                            @click = "selectItem(item, index)"
             >
               <i class="current" :class="getCurrentIcon(item)"></i>
               <span class="text">{{ item.name }}</span>
@@ -172,6 +172,20 @@ export default {
       }
       return cls
     },
+     // 播放模式文案
+    modeText() {
+      let mode = ''
+      if (this.mode === 0) {
+        mode = '顺序播放'
+      } else if (this.mode === 1) {
+        mode = '单曲循环'
+      } else if (this.mode === 2) {
+        mode = '随机播放'
+      } else {
+        mode = ''
+      }
+      return mode
+    }
   },
   watch: {
     // 切歌后滚动至第一个
