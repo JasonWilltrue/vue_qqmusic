@@ -13,7 +13,9 @@
         <search-box ref="searchBoxRef" @query="onQueryChange" placeholder="搜索歌曲"></search-box>
       </div>
       <!-- 切换及其内容 -->
-      <div class="shortcut" v-show="!query"></div>
+      <div class="shortcut" v-show="!query">
+        <m-switch :switches="switches" :currentIndex="currentIndex" @switch="switchItem"></m-switch>
+      </div>
       <!-- 搜索历史 -->
       <div class="search-result" v-show="query">
         <suggest :query="query" :zhida="zhida" @select="savaHis" @beforeScroll="blurInput"></suggest>
@@ -31,8 +33,10 @@
 <script>
 import MScroll from "base/scroll/scroll";
 import SearchBox from 'base/searchbox/searchbox';
+
 import TopTip from "base/toptip/toptip";
-import Suggest from 'components/m-suggestlist/suggestlist.vue'
+import Suggest from 'components/m-suggestlist/suggestlist'
+import MSwitch from "components/m-switch/switch";
 import {mapActions  } from "vuex";
 export default {
   name      : 'addsong',
@@ -40,7 +44,8 @@ export default {
     MScroll,
     SearchBox,
     Suggest,
-    TopTip
+    TopTip,
+    MSwitch
   },
   data () {
     return {
@@ -49,7 +54,14 @@ export default {
       query: '',
       // 不搜索歌手
       zhida: false,
-
+      // 切换开关文案
+      switches: [
+        {name: '最近播放'},
+        {name: '搜索历史'}
+      ],
+      // 当前切换开关
+      currentIndex: 0,
+      refreshDelay: 100
     }
   },
   methods: {
@@ -89,12 +101,10 @@ export default {
   width     : 100%;
   z-index   : 200;
   background: @color-background;
-  &.slide-enter-active,
-  &.slide-leave-active {
+  &.slide-enter-active, &.slide-leave-active {
     transition: all 0.3s;
   }
-  &.slide-enter,
-  &.slide-leave-to {
+  &.slide-enter, &.slide-leave-to {
     transform: translate3d(100%, 0, 0);
   }
   .header {
@@ -117,43 +127,43 @@ export default {
         color    : @color-theme;
       }
     }
-    .search-box-wrapper {
-      margin: 20px;
-    }
-    .shortcut {
-      .list-wrapper {
-        position: absolute;
-        top     : 165px;
-        bottom  : 0;
-        width   : 100%;
-        .list-scroll {
-          height  : 100%;
-          overflow: hidden;
-          .list-inner {
-            padding: 20px 30px;
-          }
+  }
+  .search-box-wrapper {
+    margin: 20px;
+  }
+  .shortcut {
+    .list-wrapper {
+      position: absolute;
+      top     : 165px;
+      bottom  : 0;
+      width   : 100%;
+      .list-scroll {
+        height  : 100%;
+        overflow: hidden;
+        .list-inner {
+          padding: 20px 30px;
         }
       }
     }
-    .search-result {
-      position: fixed;
-      top     : 124px;
-      bottom  : 0;
-      width   : 100%;
+  }
+  .search-result {
+    position: fixed;
+    top     : 124px;
+    bottom  : 0;
+    width   : 100%;
+  }
+  .tip-title {
+    text-align: center;
+    padding   : 18px 0;
+    font-size : 0;
+    .icon-ok {
+      font-size   : @font-size-medium;
+      color       : @color-theme;
+      margin-right: 4px;
     }
-    .tip-title {
-      text-align: center;
-      padding   : 18px 0;
-      font-size : 0;
-      .icon-ok {
-        font-size   : @font-size-medium;
-        color       : @color-theme;
-        margin-right: 4px;
-      }
-      .text {
-        font-size: @font-size-medium;
-        color    : @color-text;
-      }
+    .text {
+      font-size: @font-size-medium;
+      color    : @color-text;
     }
   }
 }
