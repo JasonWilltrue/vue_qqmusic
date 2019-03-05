@@ -74,3 +74,9 @@ export function localClear(query) {
   storage.remove(SEARCH_KEY)
   return []
 }
+// 最近播放 localstorage
+const PLAY_KEY = '__play__'
+// 获取
+export function getPlayStorage() {
+  return storage.get(PLAY_KEY, [])
+}

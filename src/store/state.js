@@ -4,7 +4,7 @@
  */
 import playMode from "common/js/config";
 import {
-  getStorage
+  getStorage, getPlayStorage
 } from "common/js/cache";
 
 
@@ -31,7 +31,7 @@ const state = {
   // searchHistory: [],
   searchHistory: getStorage(),
   // 播放历史（最近播放）
-  // playHistory: getPlayStorage(),
+  playHistory: getPlayStorage(),
   // 我的收藏
   // favoriteList: getFavorite()
 }
