@@ -1,9 +1,14 @@
 <!--tab切换 -->
 <template>
   <ul class="switches">
-    <li class="switch-item" :class="{'active':currentIndex === index}"
-        v-for="(item, index) in switches" :key="index" @click="switchItem(index)">
-      <span>{{ item.name }} </span>
+    <li
+        class  = "switch-item"
+      :class   = "{'active':currentIndex === index}"
+        v-for  = "(item, index) in switches"
+      :key     = "index"
+        @click = "switchItem(index)"
+    >
+      <span>{{ item.name }}</span>
     </li>
   </ul>
 </template>
@@ -23,7 +28,7 @@ export default {
   watch  : {},
   methods: {
     // 开关被切换了，通知父组件
-    switchItem(index) {
+    switchItem (index) {
       this.$emit('switch', index)
     }
   }

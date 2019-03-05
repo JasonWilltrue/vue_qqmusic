@@ -1,3 +1,10 @@
+<!--
+ * @Author      : Jerrychan
+ * @LastEditors : Jerrychan
+ * @Description : 添加歌曲页面组件
+ * @Date        : 2019-03-02 23: 49: 58
+ * @LastEditTime: 2019-03-05 23: 57: 13
+ -->
 <template>
   <transition name="slide">
     <div class="add-song" v-show="showFlag" @click.stop>
@@ -37,7 +44,7 @@ import SearchBox from 'base/searchbox/searchbox';
 import TopTip from "base/toptip/toptip";
 import Suggest from 'components/m-suggestlist/suggestlist'
 import MSwitch from "components/m-switch/switch";
-import {mapActions  } from "vuex";
+import { mapActions } from "vuex";
 export default {
   name      : 'addsong',
   components: {
@@ -56,8 +63,8 @@ export default {
       zhida: false,
       // 切换开关文案
       switches: [
-        {name: '最近播放'},
-        {name: '搜索历史'}
+        { name: '最近播放' },
+        { name: '搜索历史' }
       ],
       // 当前切换开关
       currentIndex: 0,
@@ -65,7 +72,7 @@ export default {
     }
   },
   methods: {
-...mapActions(['saveHistory', 'delHistory', 'insertSong']),
+    ...mapActions(['saveHistory', 'delHistory', 'insertSong']),
     // 保存搜索结果历史到 vuex 和 localstorage 中
     show () {
       this.showFlag = true
@@ -86,6 +93,10 @@ export default {
     blurInput () {
       this.$refs.searchBoxRef.blur()
     },
+    //切换tab
+    switchItem(index){
+       this.currentIndex = index
+    }
   },
 }
 </script>
@@ -101,10 +112,12 @@ export default {
   width     : 100%;
   z-index   : 200;
   background: @color-background;
-  &.slide-enter-active, &.slide-leave-active {
+  &.slide-enter-active,
+  &.slide-leave-active {
     transition: all 0.3s;
   }
-  &.slide-enter, &.slide-leave-to {
+  &.slide-enter,
+  &.slide-leave-to {
     transform: translate3d(100%, 0, 0);
   }
   .header {
