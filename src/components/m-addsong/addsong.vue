@@ -3,7 +3,7 @@
  * @LastEditors : Jerrychan
  * @Description : 添加歌曲页面组件
  * @Date        : 2019-03-02 23: 49: 58
- * @LastEditTime: 2019-03-05 23: 57: 13
+ * @LastEditTime: 2019-03-06 00: 06: 28
  -->
 <template>
   <transition name="slide">
@@ -22,6 +22,20 @@
       <!-- 切换及其内容 -->
       <div class="shortcut" v-show="!query">
         <m-switch :switches="switches" :currentIndex="currentIndex" @switch="switchItem"></m-switch>
+        <div class="list-wrapper">
+          <!-- 最近播放 -->
+          <m-scroll
+                ref   = "songListRef"
+                v-if  = "currentIndex === 0"
+                class = "list-scroll"
+              :data   = "playHistory"
+          >
+            <div class="list-inner">
+              <song-list :songs="playHistory" @select="selectSong"></song-list>
+            </div>
+          </m-scroll>
+          <!-- 搜索历史 -->
+        </div>
       </div>
       <!-- 搜索历史 -->
       <div class="search-result" v-show="query">
@@ -40,11 +54,11 @@
 <script>
 import MScroll from "base/scroll/scroll";
 import SearchBox from 'base/searchbox/searchbox';
-
+import SongList from "base/songlist/songlist";
 import TopTip from "base/toptip/toptip";
 import Suggest from 'components/m-suggestlist/suggestlist'
 import MSwitch from "components/m-switch/switch";
-import { mapActions } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name      : 'addsong',
   components: {
@@ -52,7 +66,8 @@ export default {
     SearchBox,
     Suggest,
     TopTip,
-    MSwitch
+    MSwitch,
+    SongList
   },
   data () {
     return {
@@ -94,9 +109,18 @@ export default {
       this.$refs.searchBoxRef.blur()
     },
     //切换tab
-    switchItem(index){
-       this.currentIndex = index
+    switchItem (index) {
+      this.currentIndex = index
+    },
+    selectSong (item, index) {
+      if (index !== 0) {
+        this.insertSong(new SingerSong(item))
+      }
+      this.$refs.topTipRef.show()
     }
+  },
+  computed: {
+    ...mapGetters(['searchHistory', 'playHistory'])
   },
 }
 </script>

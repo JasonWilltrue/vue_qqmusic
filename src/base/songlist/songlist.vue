@@ -1,28 +1,15 @@
 <template>
   <div class="song-list">
     <ul>
-      <li
-              v-for  = "(song,index) in songs"
-            :key     = "song.id"
-              class  = "item"
-              @click = "selectItem(song,index)"
-      >
+      <li v-for="(song,index) in songs" :key="song.id" class="item" @click="selectItem(song,index)">
         <!-- 排行奖杯图片 -->
-        <div
-          class  = "rank"
-          v-show = "rank"
-        >
-          <span
-                  class = "icon"
-                :class  = "getRankCls(index)"
-          >{{ getRankTxt(index) }}</span>
+        <div class="rank" v-show="rank">
+          <span class="icon" :class="getRankCls(index)">{{ getRankTxt(index) }}</span>
         </div>
         <!-- 内容 -->
         <div class="content">
           <h2 class="name">{{song.name}}</h2>
-          <p class="desc">
-            {{getDesc(song)}}
-          </p>
+          <p class="desc">{{getDesc(song)}}</p>
         </div>
       </li>
     </ul>
@@ -43,10 +30,10 @@ export default {
     }
   },
   methods: {
-    getDesc(song) {
+    getDesc (song) {
       return `${song.singer}--${song.album}`;
     },
-    getRankCls(index) {
+    getRankCls (index) {
       if (index === 0) {
         return "icon0";
       } else if (index === 1) {
@@ -58,12 +45,12 @@ export default {
       }
     },
     // 排行奖杯文案
-    getRankTxt(index) {
+    getRankTxt (index) {
       if (index > 2) {
         return index + 1;
       }
     },
-    selectItem(song, index) {
+    selectItem (song, index) {
       this.$emit("select", song, index);
     }
   }
