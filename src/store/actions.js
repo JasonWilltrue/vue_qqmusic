@@ -5,7 +5,9 @@ import {
 import {
   localSave,
   localDel,
-  localClear
+  localClear,
+  savePlay
+
 } from "common/js/cache";
 
 //找到新列表中的指定索引
@@ -182,3 +184,10 @@ export const deleteSongList = function ({
   commit(types.SET_CURRENT_INDEX, -1)
   commit(types.SET_PLAYING_STATE, false)
 }
+
+
+// 把当前歌曲写进 vuex 最近播放 playHistory 中
+export const saveplayHistory = function ({ commit }, song) {
+  commit(types.SET_PLAYHISTORY, savePlay(song))
+}
+

@@ -80,3 +80,19 @@ const PLAY_KEY = '__play__'
 export function getPlayStorage() {
   return storage.get(PLAY_KEY, [])
 }
+
+
+// 增加
+export function savePlay(song) {
+  // 当前 localstorage 数组
+  let songs = storage.get(PLAY_KEY, [])
+
+  insertArr(songs, song, (item) => {
+    return item.id === song.id
+  }, 50)
+
+  storage.set(PLAY_KEY, songs)
+  return songs
+}
+
+

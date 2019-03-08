@@ -7,7 +7,6 @@ import {
   getStorage, getPlayStorage
 } from "common/js/cache";
 
-
 const state = {
   // 歌手信息
   singer: {},
