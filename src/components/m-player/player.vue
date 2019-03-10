@@ -212,7 +212,7 @@ export default {
       setMode        : "SET_MODE",
       setPlayList    : "SET_PLAYLIST"
     }),
-    ...mapActions(['saveplayHistory']),
+    ...mapActions(['savePlayHistory']),
     back () {
       //do something
       this.setFullScreen(false);
@@ -321,7 +321,7 @@ export default {
     },
     next () {
       // 如果播放列表只要一条数据
-      if (this.playlist.length === 1) { 
+      if (this.playlist.length === 1) {
         this.loopSong();
       } else {
         let index = this.currentIndex + 1;
@@ -501,6 +501,7 @@ export default {
     //开始播放2件事情 1播放状态改变  2保存当前播放歌曲进入历史列表
     ready () {
       this.songCanplay = true;
+      console.log(this.currentSong);
       this.savePlayHistory(this.currentSong)
     },
     error () {

@@ -186,7 +186,7 @@ export const deleteSongList = function ({
 
 
 // 把当前歌曲写进 vuex 最近播放 playHistory 中
-export const saveplayHistory = function ({
+export const savePlayHistory = function ({
     commit
   }, song) {
   commit(types.SET_PLAYHISTORY, savePlay(song))
