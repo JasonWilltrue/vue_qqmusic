@@ -98,12 +98,14 @@ export default {
       overflow   : hidden;
       .name {
         .no-wrap();
-        color: @color-text;
+        color    : @color-text;
+        font-size: @font-size-medium
       }
       .desc {
         .no-wrap();
         margin-top: 4px;
         color     : @color-text-d;
+        font-size : @font-size-medium
       }
     }
   }

@@ -3,7 +3,7 @@
  * @LastEditors : Jerrychan
  * @Description : 添加歌曲页面组件
  * @Date        : 2019-03-02 23: 49: 58
- * @LastEditTime: 2019-03-06 00: 06: 28
+ * @LastEditTime: 2019-03-11 00: 32: 50
  -->
 <template>
   <transition name="slide">
@@ -25,10 +25,10 @@
         <div class="list-wrapper">
           <!-- 最近播放 -->
           <m-scroll
-                ref   = "songListRef"
-                v-if  = "currentIndex === 0"
-                class = "list-scroll"
-              :data   = "playHistory"
+                                                      ref   = "songListRef"
+                                                      v-if  = "currentIndex === 0"
+                                                      class = "list-scroll"
+                                                    :data   = "playHistory"
           >
             <div class="list-inner">
               <song-list :songs="playHistory" @select="selectSong"></song-list>
@@ -59,6 +59,7 @@ import TopTip from "base/toptip/toptip";
 import Suggest from 'components/m-suggestlist/suggestlist'
 import MSwitch from "components/m-switch/switch";
 import { mapActions, mapGetters } from "vuex";
+import  Song  from 'common/js/song.js'
 export default {
   name      : 'addsong',
   components: {
@@ -112,9 +113,11 @@ export default {
     switchItem (index) {
       this.currentIndex = index
     },
-    selectSong (item, index) {
+    selectSong (song, index) {
       if (index !== 0) {
-        this.insertSong(new SingerSong(item))
+        //不能直接用song 是从缓存里面取的  需要引用song这个类的实例
+        console.log(new Song(song));
+        this.insertSong(new Song(song))
       }
       this.$refs.topTipRef.show()
     }
