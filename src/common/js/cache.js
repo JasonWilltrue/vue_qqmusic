@@ -89,7 +89,7 @@ export function savePlay(song) {
 
   insertArr(songs, song, (item) => {
     return item.id === song.id
-  }, 50)
+  }, 50) //50 最大长度
 
   storage.set(PLAY_KEY, songs)
   return songs
