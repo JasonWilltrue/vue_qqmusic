@@ -3,7 +3,7 @@
  * @LastEditors : Jerrychan
  * @Description : 添加歌曲页面组件
  * @Date        : 2019-03-02 23: 49: 58
- * @LastEditTime: 2019-03-11 00: 32: 50
+ * @LastEditTime: 2019-03-12 18: 58: 11
  -->
 <template>
   <transition name="slide">
@@ -25,16 +25,27 @@
         <div class="list-wrapper">
           <!-- 最近播放 -->
           <m-scroll
-                                                      ref   = "songListRef"
-                                                      v-if  = "currentIndex === 0"
-                                                      class = "list-scroll"
-                                                    :data   = "playHistory"
+                    ref   = "songListRef"
+                    v-if  = "currentIndex === 0"
+                    class = "list-scroll"
+                  :data   = "playHistory"
           >
             <div class="list-inner">
               <song-list :songs="playHistory" @select="selectSong"></song-list>
             </div>
           </m-scroll>
           <!-- 搜索历史 -->
+          <m-scroll
+                    class       = "list-scroll"
+                  :refreshDelay = "refreshDelay"
+                    ref         = "searchListRef"
+                    v-if        = "currentIndex === 1"
+                  :data         = "searchHistory"
+          >
+            <div class="list-inner">
+              <search-list @delete="delHistory" @select="addQuery" :searches="searchHistory"></search-list>
+            </div>
+          </m-scroll>
         </div>
       </div>
       <!-- 搜索历史 -->
@@ -55,11 +66,12 @@
 import MScroll from "base/scroll/scroll";
 import SearchBox from 'base/searchbox/searchbox';
 import SongList from "base/songlist/songlist";
+import SearchList from "base/searchlist/searchlist";
 import TopTip from "base/toptip/toptip";
 import Suggest from 'components/m-suggestlist/suggestlist'
 import MSwitch from "components/m-switch/switch";
 import { mapActions, mapGetters } from "vuex";
-import  Song  from 'common/js/song.js'
+import Song from 'common/js/song.js'
 export default {
   name      : 'addsong',
   components: {
@@ -68,7 +80,8 @@ export default {
     Suggest,
     TopTip,
     MSwitch,
-    SongList
+    SongList,
+    SearchList
   },
   data () {
     return {
@@ -92,6 +105,14 @@ export default {
     // 保存搜索结果历史到 vuex 和 localstorage 中
     show () {
       this.showFlag = true
+      //解决页面一进入之后列表无法滚动（没有重新出发计算）
+       setTimeout(() => {
+        if (this.currentIndex === 0) {
+          this.$refs.songListRef.refresh()
+        } else {
+          this.$refs.searchListRef.refresh()
+        }
+      }, 20)
     },
     hide () {
       this.showFlag = false
@@ -120,7 +141,10 @@ export default {
         this.insertSong(new Song(song))
       }
       this.$refs.topTipRef.show()
-    }
+    },
+    addQuery (k) {
+      this.$refs.searchBoxRef.getQuery(k)
+    },
   },
   computed: {
     ...mapGetters(['searchHistory', 'playHistory'])
