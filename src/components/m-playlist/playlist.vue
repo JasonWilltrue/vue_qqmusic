@@ -13,14 +13,19 @@
           </h1>
         </div>
         <!-- 中部列表 -->
-        <m-scroll class="list-content" ref="scrollRef" :data="sequenceList">
+        <m-scroll
+            class       = "list-content"
+          :refreshDelay = "refreshDelay"
+            ref         = "scrollRef"
+          :data         = "sequenceList"
+        >
           <transition-group tag="ul" name="list">
             <li
-                                          ref    = "listRef"
-                                          class  = "item"
-                                          v-for  = "(item,index) in sequenceList"
-                                        :key     = "item.id"
-                                          @click = "selectItem(item, index)"
+                ref    = "listRef"
+                class  = "item"
+                v-for  = "(item,index) in sequenceList"
+              :key     = "item.id"
+                @click = "selectItem(item, index)"
             >
               <i class="current" :class="getCurrentIcon(item)"></i>
               <span class="text">{{ item.name }}</span>
@@ -35,7 +40,7 @@
         </m-scroll>
         <!-- 添加按钮 -->
         <div class="list-operate">
-          <div class="add" @click="showAddSong" >
+          <div class="add" @click="showAddSong">
             <i class="icon-add"></i>
             <span class="text">添加歌曲到队列</span>
           </div>
@@ -47,8 +52,8 @@
       </div>
       <!-- 清空弹窗 -->
       <m-confirm ref="confirmRef" @confirm="confirm" @cancel="cancel"></m-confirm>
-    <!-- 添加歌曲列表页面 -->
-    <add-song ref="addSongRef"></add-song>
+      <!-- 添加歌曲列表页面 -->
+      <add-song ref="addSongRef"></add-song>
     </div>
   </transition>
 </template>
@@ -160,7 +165,7 @@ export default {
       this.setPlayList(newList);
     },
     //跳转添加歌曲列表页面
-    showAddSong() {
+    showAddSong () {
       this.$refs.addSongRef.show()
     }
   },
@@ -180,8 +185,8 @@ export default {
       }
       return cls
     },
-     // 播放模式文案
-    modeText() {
+    // 播放模式文案
+    modeText () {
       let mode = ''
       if (this.mode === 0) {
         mode = '顺序播放'

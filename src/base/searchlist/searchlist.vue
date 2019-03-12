@@ -29,10 +29,6 @@ export default {
       this.$emit('delete', item)
     }
   },
-  // 过滤器设计目的就是用于简单的文本转换
-  filters: {},
-  // 若要实现更复杂的数据变换，你应该使用计算属性
-  computed: {},
 }
 </script>
 

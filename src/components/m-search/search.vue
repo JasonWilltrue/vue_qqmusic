@@ -6,17 +6,17 @@
       <search-box @query="onQueryChange" ref="searchBoxRef"></search-box>
     </div>
     <div class="shortcut-wrapper" v-show="!query" ref="shortcutRef">
-      <m-scroll class="shortcut" ref="scrollRef" :data="scrollData">
+      <m-scroll class="shortcut" :refreshDelay="refreshDelay" ref="scrollRef" :data="scrollData">
         <div>
           <!-- 热门搜索 -->
           <div class="hot-key">
             <h1 class="title">热门搜索</h1>
             <ul>
               <li
-                  class  = "item"
-                  v-for  = "(item,index) in hotkey"
-                :key     = "index"
-                  @click = "addQuery(item.k)"
+                    class  = "item"
+                    v-for  = "(item,index) in hotkey"
+                  :key     = "index"
+                    @click = "addQuery(item.k)"
               >
                 <span>{{ item.k }}</span>
               </li>
@@ -38,11 +38,11 @@
     <!-- 搜索结果 -->
     <div class="search-result" ref="resultRef" v-show="query">
       <suggest-List
-          ref           = "suggestRef"
-        :query          = "query"
-        :zhida          = "zhida"
-          @select       = "saveHisory"
-          @beforeScroll = "blurInput"
+            ref           = "suggestRef"
+          :query          = "query"
+          :zhida          = "zhida"
+            @select       = "saveHisory"
+            @beforeScroll = "blurInput"
       ></suggest-List>
     </div>
     <!-- 清空弹窗 -->
