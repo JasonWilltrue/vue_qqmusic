@@ -1,12 +1,12 @@
 <template>
   <div class="my-header">
     <div class="icon">
-
     </div>
     <h1 class="text">企鹅音乐</h1>
-    <div class="mine">
+   <!-- 个人中心 -->
+    <router-link to="/user" class="mine" tag="div">
       <i class="icon-mine"></i>
-    </div>
+    </router-link>
   </div>
 </template>
 

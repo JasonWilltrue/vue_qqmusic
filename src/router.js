@@ -7,6 +7,7 @@ import Search from 'components/m-search/search'
 import SingerDetail from "components/m-singerdetail/singerdetail"
 import SongList from "components/m-songlistdetail/songlistdetail"
 import RankDetail from 'components/m-ranklistdetail/ranklistdetail'
+import User from 'components/m-user/user'
 Vue.use(Router)
 
 
@@ -23,6 +24,11 @@ export default new Router({
         path     : ':id',
         component: SongList
       }]
+    },
+    {
+      path     : '/user',
+      name     : 'user',
+      component: User
     },
     {
       path     : '/singer',
