@@ -3,7 +3,7 @@
  * @LastEditors : Jerrychan
  * @Description : 添加歌曲页面组件
  * @Date        : 2019-03-02 23: 49: 58
- * @LastEditTime: 2019-03-12 22: 52: 01
+ * @LastEditTime: 2019-03-13 23: 01: 46
  -->
 <template>
   <transition name="slide">
@@ -25,10 +25,10 @@
         <div class="list-wrapper">
           <!-- 最近播放 -->
           <m-scroll
-                                  ref   = "songListRef"
-                                  v-if  = "currentIndex === 0"
-                                  class = "list-scroll"
-                                :data   = "playHistory"
+                  ref   = "songListRef"
+                  v-if  = "currentIndex === 0"
+                  class = "list-scroll"
+                :data   = "playHistory"
           >
             <div class="list-inner">
               <song-list :songs="playHistory" @select="selectSong"></song-list>
@@ -36,11 +36,11 @@
           </m-scroll>
           <!-- 搜索历史 -->
           <m-scroll
-                                  class       = "list-scroll"
-                                :refreshDelay = "refreshDelay"
-                                  ref         = "searchListRef"
-                                  v-if        = "currentIndex === 1"
-                                :data         = "searchHistory"
+                  class       = "list-scroll"
+                :refreshDelay = "refreshDelay"
+                  ref         = "searchListRef"
+                  v-if        = "currentIndex === 1"
+                :data         = "searchHistory"
           >
             <div class="list-inner">
               <search-list @delete="delHistory" @select="addQuery" :searches="searchHistory"></search-list>
@@ -106,7 +106,7 @@ export default {
     show () {
       this.showFlag = true
       //解决页面一进入之后列表无法滚动（没有重新出发计算）
-       setTimeout(() => {
+      setTimeout(() => {
         if (this.currentIndex === 0) {
           this.$refs.songListRef.refresh()
         } else {
