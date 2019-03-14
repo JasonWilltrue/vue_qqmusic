@@ -10,13 +10,14 @@
         <m-switch :switches="switches" :currentIndex="currentIndex" @switch="switchItem"></m-switch>
       </div>
       <!-- 按钮布局 -->
-      <div ref="playBtn" class="play-btn" >
+      <div ref="playBtn" class="play-btn" @click="random">
         <i class="icon-play"></i>
         <span class="text">随机播放全部</span>
       </div>
       <!-- 两个列表 -->
       <div class="list-wrapper" ref="listWrapper">
         <!-- 我的收藏 -->
+
         <!-- 最近播放 -->
         <m-scroll ref="playListRef" class="list-scroll" v-if="currentIndex===1" :data="playHistory">
           <div class="list-inner">
@@ -53,7 +54,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['saveHistory', 'delHistory', 'insertSong']),
+    ...mapActions(['saveHistory', 'delHistory', 'insertSong','randomPlay']),
     switchItem (index) {
       this.currentIndex = index
     },
@@ -62,6 +63,14 @@ export default {
     },
     back () {
       this.$router.back()
+    },
+    random() {
+      let list = this.currentIndex === 0 ? this.favoriteList : this.playHistory
+          list = list.map((song) => {
+        return new Song(song)
+      })
+      //随机播放事件
+      this.randomPlay({list})
     },
   },
   computed: {
