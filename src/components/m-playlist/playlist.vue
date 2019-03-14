@@ -30,7 +30,7 @@
               <i class="current" :class="getCurrentIcon(item)"></i>
               <span class="text">{{ item.name }}</span>
               <span class="like">
-                <i class="icon-not-favorite"></i>
+                <i class="icon" :class="getFavoriteCls(item)" @click="toggleFavoriteCls(item)"></i>
               </span>
               <span class="delete" @click.stop="deleteOne(item)">
                 <i class="icon-delete"></i>
@@ -84,7 +84,7 @@ export default {
       setPlayingState: 'SET_PLAYING_STATE',
       setPlayList    : 'SET_PLAYLIST'
     }),
-    ...mapActions(['deleteSong', 'deleteSongList']),
+    ...mapActions(['deleteSong', 'deleteSongList', 'saveplayHistory', 'savefavoriteList', 'delfavoriteList']),
     show () {
       this.showFlag = true
       // show的时候列表显示之后才能被正常计算 延迟计算 better-scroll
@@ -167,7 +167,30 @@ export default {
     //跳转添加歌曲列表页面
     showAddSong () {
       this.$refs.addSongRef.show()
-    }
+    },
+    //切换收藏状态
+    toggleFavoriteCls (song) {
+      if (this._isFavorite(song)) {
+        this.delfavoriteList(song)
+      } else {
+        this.savefavoriteList(song)
+      }
+    },
+    //切换收藏图标
+    getFavoriteCls (song) {
+      if (this._isFavorite(song)) {
+        return 'icon-favorite'
+      } else {
+        return 'icon-not-favorite'
+      }
+    },
+    // 判断是否收藏状态
+    _isFavorite (song) {
+      let index = this.favoriteList.findIndex((item) => {
+        return song.id === item.id
+      })
+      return index > -1
+    },
   },
   computed: {
     ...mapGetters(['sequenceList', 'currentSong', 'mode', 'playlist', 'favoriteList']),
