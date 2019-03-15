@@ -67,7 +67,7 @@ export default {
     random() {
       let list = this.currentIndex === 0 ? this.favoriteList : this.playHistory
           list = list.map((song) => {
-        return new Song(song)
+           return new Song(song)
       })
       //随机播放事件
       this.randomPlay({list})

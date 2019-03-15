@@ -14,18 +14,18 @@
         </div>
         <!-- 中部列表 -->
         <m-scroll
-            class       = "list-content"
-          :refreshDelay = "refreshDelay"
-            ref         = "scrollRef"
-          :data         = "sequenceList"
+              class       = "list-content"
+            :refreshDelay = "refreshDelay"
+              ref         = "scrollRef"
+            :data         = "sequenceList"
         >
           <transition-group tag="ul" name="list">
             <li
-                ref    = "listRef"
-                class  = "item"
-                v-for  = "(item,index) in sequenceList"
-              :key     = "item.id"
-                @click = "selectItem(item, index)"
+                  ref    = "listRef"
+                  class  = "item"
+                  v-for  = "(item,index) in sequenceList"
+                :key     = "item.id"
+                  @click = "selectItem(item, index)"
             >
               <i class="current" :class="getCurrentIcon(item)"></i>
               <span class="text">{{ item.name }}</span>
