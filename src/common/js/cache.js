@@ -95,4 +95,37 @@ export function savePlay(song) {
   return songs
 }
 
+// 最近播放 localstorage
+const FAVORITE_KEY = '__favorite__'
+
+// 获取
+export function getFavorite() {
+  return storage.get(FAVORITE_KEY, [])
+}
+
+// 增加
+export function saveFavorite(song) {
+  // 当前 localstorage 数组
+  let songs = storage.get(FAVORITE_KEY, [])
+
+  insertArr(songs, song, (item) => {
+    return item.id === song.id
+  }, 50)
+
+  storage.set(FAVORITE_KEY, songs)
+  return songs
+}
+
+// 删除
+export function delFavorite(song) {
+  // 当前 localstorage 数组
+  let songs = storage.get(FAVORITE_KEY, [])
+
+  delArr(songs, (item) => {
+    return item.id === song.id
+  })
+
+  storage.set(FAVORITE_KEY, songs)
+  return songs
+}
 

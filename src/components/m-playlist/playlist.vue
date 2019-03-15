@@ -14,18 +14,18 @@
         </div>
         <!-- 中部列表 -->
         <m-scroll
-              class       = "list-content"
-            :refreshDelay = "refreshDelay"
-              ref         = "scrollRef"
-            :data         = "sequenceList"
+                    class       = "list-content"
+                  :refreshDelay = "refreshDelay"
+                    ref         = "scrollRef"
+                  :data         = "sequenceList"
         >
           <transition-group tag="ul" name="list">
             <li
-                  ref    = "listRef"
-                  class  = "item"
-                  v-for  = "(item,index) in sequenceList"
-                :key     = "item.id"
-                  @click = "selectItem(item, index)"
+                        ref    = "listRef"
+                        class  = "item"
+                        v-for  = "(item,index) in sequenceList"
+                      :key     = "item.id"
+                        @click = "selectItem(item, index)"
             >
               <i class="current" :class="getCurrentIcon(item)"></i>
               <span class="text">{{ item.name }}</span>
@@ -84,7 +84,7 @@ export default {
       setPlayingState: 'SET_PLAYING_STATE',
       setPlayList    : 'SET_PLAYLIST'
     }),
-    ...mapActions(['deleteSong', 'deleteSongList', 'saveplayHistory', 'savefavoriteList', 'delfavoriteList']),
+    ...mapActions(['deleteSong', 'deleteSongList', 'savePlayHistory', 'savefavoriteList', 'delfavoriteList']),
     show () {
       this.showFlag = true
       // show的时候列表显示之后才能被正常计算 延迟计算 better-scroll
@@ -186,7 +186,7 @@ export default {
     },
     // 判断是否收藏状态
     _isFavorite (song) {
-      let index = this.favoriteList.findIndex((item) => {
+      let index = this.favoriteList.findIndex(item => {
         return song.id === item.id
       })
       return index > -1

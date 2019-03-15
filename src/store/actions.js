@@ -6,15 +6,18 @@ import {
   localSave,
   localDel,
   localClear,
-  savePlay
+  savePlay,
+    saveFavorite,
+    delFavorite
 } from "common/js/cache";
 
-//找到新列表中的指定索引
+
 function findIndex(list, song) {
   return list.findIndex((item) => {
     return item.id === song.id
   })
 }
+
 
 export const selectPlay = function ({
   commit,
@@ -164,7 +167,7 @@ export const deleteSong = function ({
   if (currentIndex > pIndex || currentIndex === playlist.length) {
     currentIndex--
   }
-  
+
   commit(types.SET_PLAYLIST, playlist)
   commit(types.SET_SEQUENCE_LIST, sequenceList)
   commit(types.SET_CURRENT_INDEX, currentIndex)
@@ -187,8 +190,19 @@ export const deleteSongList = function ({
 
 // 把当前歌曲写进 vuex 最近播放 playHistory 中
 export const savePlayHistory = function ({
-    commit
-  }, song) {
+  commit
+}, song) {
   commit(types.SET_PLAYHISTORY, savePlay(song))
 }
-
+// 我的收藏
+export const savefavoriteList = function ({
+  commit
+}, song) {
+  commit(types.SET_FAVORITE_LIST, saveFavorite(song))
+}
+//删除收藏
+export const delfavoriteList = function ({
+  commit
+}, song) {
+  commit(types.SET_FAVORITE_LIST, delFavorite(song))
+}
