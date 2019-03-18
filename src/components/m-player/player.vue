@@ -45,11 +45,11 @@
             <div class="lyric-wrapper">
               <div v-if="currentLyric">
                 <p
-                      ref   = "lyricLine"
-                      v-for = "(line, index) in currentLyric.lines"
-                    :key    = "index"
-                    :class  = "{ 'current':currentLyricLine === index }"
-                      class = "text"
+                    ref   = "lyricLine"
+                    v-for = "(line, index) in currentLyric.lines"
+                  :key    = "index"
+                  :class  = "{ 'current':currentLyricLine === index }"
+                    class = "text"
                 >{{ line.txt }}</p>
               </div>
             </div>
@@ -85,9 +85,9 @@
             </div>
             <div class="icon i-right">
               <i
-                    class  = "icon"
-                  :class   = "getFavoriteCls(currentSong)"
-                    @click = "toggleFavoriteCls(currentSong)"
+                  class  = "icon"
+                :class   = "getFavoriteCls(currentSong)"
+                  @click = "toggleFavoriteCls(currentSong)"
               ></i>
             </div>
           </div>
@@ -101,9 +101,9 @@
           <img
             :src = "currentSong.image"
             alt
-                width  = "100%"
-                height = "100%"
-              :class   = "playing ? 'play' : 'play pause'"
+              width  = "100%"
+              height = "100%"
+            :class   = "playing ? 'play' : 'play pause'"
           >
         </div>
         <div class="text">
@@ -113,9 +113,9 @@
         <div class="control">
           <progress-circle :percent="percent" :radius="32">
             <i
-                  @click.stop = "togglePlaying"
-                :class        = "playing ? 'icon-pause-mini' : 'icon-play-mini'"
-                  class       = "icon-mini"
+                @click.stop = "togglePlaying"
+              :class        = "playing ? 'icon-pause-mini' : 'icon-play-mini'"
+                class       = "icon-mini"
             ></i>
           </progress-circle>
         </div>
@@ -127,12 +127,12 @@
     <play-list ref="playlistRef"></play-list>
     <!-- 播放器 -->
     <audio
-          ref         = "audioRef"
-        :src          = "currentSong.url"
-          @play       = "ready"
-          @error      = "error"
-          @timeupdate = "updateTime"
-          @ended      = "ended"
+        ref         = "audioRef"
+      :src          = "currentSong.url"
+        @play       = "ready"
+        @error      = "error"
+        @timeupdate = "updateTime"
+        @ended      = "ended"
     >Your browser does not support the audio element.</audio>
   </div>
 </template>
@@ -307,9 +307,9 @@ export default {
      * 时间格式转换分钟，秒
      */
     timeFormat (time) {
-                  time = Math.floor(time);
-            const min  = Math.floor(time / 60);
-            const sec  = time % 60 < 10 ? "0" + (time % 60) : time % 60;
+            time = Math.floor(time);
+      const min  = Math.floor(time / 60);
+      const sec  = time % 60 < 10 ? "0" + (time % 60) : time % 60;
       return `${min}:${sec}`;
     },
     //=======歌曲播放操作========
@@ -340,8 +340,10 @@ export default {
         //如果发现为暂停状态切换下一首各⭐️
         if (!this.playing) {
           this.togglePlaying();
+          this.songCanplay = false;
         }
       }
+
     },
     prev () {
       if (!this.songCanplay) {
@@ -355,6 +357,7 @@ export default {
       if (!this.playing) {
         this.togglePlaying();
       }
+      this.songCanplay = false
     },
     // 单曲循环
     loopSong () {
@@ -566,10 +569,12 @@ export default {
       // 切歌时，停止当前歌词
       if (this.currentLyric) {
         this.currentLyric.stop()
+        this.currentTime      = 0;
+        this.playingLyric     = ""
+        this.currentLyricLine = 0;
       }
       // DOM 更新了 解决微信端从后台切到前台重新播放问题
       clearTimeout(this.timer)
-
       this.timer = setTimeout(() => {
         this.$refs.audioRef.play()
         this._getLyric()
