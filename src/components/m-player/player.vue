@@ -45,11 +45,11 @@
             <div class="lyric-wrapper">
               <div v-if="currentLyric">
                 <p
-                                ref   = "lyricLine"
-                                v-for = "(line, index) in currentLyric.lines"
-                              :key    = "index"
-                              :class  = "{ 'current':currentLyricLine === index }"
-                                class = "text"
+                      ref   = "lyricLine"
+                      v-for = "(line, index) in currentLyric.lines"
+                    :key    = "index"
+                    :class  = "{ 'current':currentLyricLine === index }"
+                      class = "text"
                 >{{ line.txt }}</p>
               </div>
             </div>
@@ -85,9 +85,9 @@
             </div>
             <div class="icon i-right">
               <i
-                              class  = "icon"
-                            :class   = "getFavoriteCls(currentSong)"
-                              @click = "toggleFavoriteCls(currentSong)"
+                    class  = "icon"
+                  :class   = "getFavoriteCls(currentSong)"
+                    @click = "toggleFavoriteCls(currentSong)"
               ></i>
             </div>
           </div>
@@ -101,9 +101,9 @@
           <img
             :src = "currentSong.image"
             alt
-                          width  = "100%"
-                          height = "100%"
-                        :class   = "playing ? 'play' : 'play pause'"
+                width  = "100%"
+                height = "100%"
+              :class   = "playing ? 'play' : 'play pause'"
           >
         </div>
         <div class="text">
@@ -113,9 +113,9 @@
         <div class="control">
           <progress-circle :percent="percent" :radius="32">
             <i
-                            @click.stop = "togglePlaying"
-                          :class        = "playing ? 'icon-pause-mini' : 'icon-play-mini'"
-                            class       = "icon-mini"
+                  @click.stop = "togglePlaying"
+                :class        = "playing ? 'icon-pause-mini' : 'icon-play-mini'"
+                  class       = "icon-mini"
             ></i>
           </progress-circle>
         </div>
@@ -127,12 +127,12 @@
     <play-list ref="playlistRef"></play-list>
     <!-- 播放器 -->
     <audio
-                    ref         = "audioRef"
-                  :src          = "currentSong.url"
-                    @canplay    = "ready"
-                    @error      = "error"
-                    @timeupdate = "updateTime"
-                    @ended      = "ended"
+          ref         = "audioRef"
+        :src          = "currentSong.url"
+          @play       = "ready"
+          @error      = "error"
+          @timeupdate = "updateTime"
+          @ended      = "ended"
     >Your browser does not support the audio element.</audio>
   </div>
 </template>
@@ -207,7 +207,7 @@ export default {
       }
       return cls;
     }
-    
+
   },
   methods: {
     ...mapMutations({
@@ -307,16 +307,16 @@ export default {
      * 时间格式转换分钟，秒
      */
     timeFormat (time) {
-                                                time = Math.floor(time);
-                                          const min  = Math.floor(time / 60);
-                                          const sec  = time % 60 < 10 ? "0" + (time % 60) : time % 60;
+                  time = Math.floor(time);
+            const min  = Math.floor(time / 60);
+            const sec  = time % 60 < 10 ? "0" + (time % 60) : time % 60;
       return `${min}:${sec}`;
     },
     //=======歌曲播放操作========
     togglePlaying () {
-      // if (!this.songCanplay) {
-      //   return;
-      // }
+      if (!this.songCanplay) {
+        return;
+      }
       this.setPlayingState(!this.playing);
 
       // 暂停时，歌词也暂停
@@ -325,6 +325,9 @@ export default {
       }
     },
     next () {
+      if (!this.songCanplay) {
+        return;
+      }
       // 如果播放列表只要一条数据
       if (this.playlist.length === 1) {
         this.loopSong();
@@ -341,6 +344,9 @@ export default {
       }
     },
     prev () {
+      if (!this.songCanplay) {
+        return;
+      }
       let index = this.currentIndex - 1;
       if (index === -1) {
         index = this.playlist.length - 1;  //最后一首歌
@@ -400,6 +406,11 @@ export default {
       this.currentSong
         .getLyric()
         .then(lyric => {
+          //如果当前歌词不等于歌词的 不执行
+          //解决歌词混乱问题
+          if (this.currentSong.lyric !== lyric) {
+            return
+          }
           this.currentLyric = new Lyric(lyric, this.handleLyric);
           console.log(this.currentLyric);
           //歌曲播放时候歌词播放
@@ -505,8 +516,8 @@ export default {
     },
     //开始播放2件事情 1播放状态改变  2保存当前播放歌曲进入历史列表
     ready () {
-      this.songCanplay = true;
-      console.log(this.currentSong);
+      this.songCanplay = true
+      // 把当前歌曲写进 vuex 最近播放 playHistory 中
       this.savePlayHistory(this.currentSong)
     },
     error () {
@@ -515,9 +526,6 @@ export default {
     updateTime (e) {
       this.currentTime = e.target.currentTime;
     },
-    
-  
-   
     //切换收藏状态
     toggleFavoriteCls (song) {
       if (this._isFavorite(song)) {
@@ -535,12 +543,12 @@ export default {
       }
     },
     // 判断是否收藏状态
-    _isFavorite(song) {
-      
-      // let index = this.favoriteList.findIndex((item) => {
-      //   return song.id === item.id
-      // })
-      // return index > -1
+    _isFavorite (song) {
+
+      let index = this.favoriteList.findIndex((item) => {
+        return song.id === item.id
+      })
+      return index > -1
     },
   },
   watch: {
@@ -561,6 +569,7 @@ export default {
       }
       // DOM 更新了 解决微信端从后台切到前台重新播放问题
       clearTimeout(this.timer)
+
       this.timer = setTimeout(() => {
         this.$refs.audioRef.play()
         this._getLyric()
