@@ -48,10 +48,12 @@
 * better-scroll：iscroll 的优化版，使移动端滑动体验更加流畅
 * LESS(Scss)：css 预编译处理器
 * ES6：ECMAScript 新一代语法，模块化、解构赋值、Promise、Class 等方法非常好用
+
 【后端】
 * Node.js：利用 Koa 起一个本地测试服务器
 * jsonp：服务端通讯。抓取 QQ音乐(移动端)数据
 * axios：服务端通讯。结合 Node.js 代理后端请求，抓取 QQ音乐(PC端)数据
+
 【自动化构建及其他工具】
 * vue-cli：Vue 脚手架工具，快速初始化项目代码
 * eslint：代码风格检查工具，规范代码书写

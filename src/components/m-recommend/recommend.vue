@@ -97,6 +97,8 @@ export default {
     },
     _getDiscList () {
       getDiscList().then(res => {
+        console.log('我想知道列表 ',res);
+        
         if (res.code == ERROR_OK) {
           console.log(res.data.list);
           this.lists = res.data.list;
