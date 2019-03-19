@@ -2,7 +2,7 @@
   <div class="my-header">
     <div class="icon">
     </div>
-    <h1 class="text">企鹅音乐</h1>
+    <h1 class="text">我的地盘！听我的</h1>
    <!-- 个人中心 -->
     <router-link to="/user" class="mine" tag="div">
       <i class="icon-mine"></i>
