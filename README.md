@@ -10,6 +10,8 @@
 ![](http://book.52react.cn/20190319085912.png) ![](http://book.52react.cn/20190319085937.png)
 #### 软件架构
 软件架构说明
+
+```
 ├── build                        // 编译后的文件
 ├── public                       // vue主页面
 ├── node_modules                // 项目依赖包
@@ -38,6 +40,8 @@
 ├── .eslintrc                   // 代码校验规则配置
 ├── README.md                   // help
 └── yarn.lock                   // 依赖的版本信息管理
+```
+
 
 #### 技术栈
 技术栈
@@ -78,3 +82,5 @@ $ yarn run build
 2. 新建 Feat_xxx 分支
 3. 提交代码
 4. 新建 Pull Request
+
+
