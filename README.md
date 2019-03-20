@@ -31,9 +31,7 @@
 │   ├── api                  //   项目请求文件
 │   │    └── tabIcon            // 底部导航图标
 │   ├── router                  // 路由部分
-│   ├── store                   // redux部分
-│   │    ├── index.js           // redux配置页面
-│   │    └── stores.js          // redux数据中心
+│   ├── store                   // vuex部分
 │   ├── main.js                  //项目注册入口文件
 │   └── App.vue                  //项目入口页
 ├── package.json                // 项目配置信息
