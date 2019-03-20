@@ -2,6 +2,8 @@
 
 #### 介绍
 这是一款基于Vue 全家桶 (2.x) 制作的移动端音乐 WebApp ，一个媲美原生的移动端音乐 App，项目完整、功能完备、UI美观、交互一流。
+#### 项目线上地址
+[点我去参观下](http://music.52react.cn)
 #### 效果图
 ![](http://book.52react.cn/20190319085537.png) ![](http://book.52react.cn/20190319085620.png)![](http://book.52react.cn/20190319085601.png) ![](http://book.52react.cn/20190319085639.png)
 
@@ -23,11 +25,15 @@
 │   │    ├── js                // 一些工具方法
 │   │    └── less              // 全局样式文件
 │   ├── base                   // 项目可复用组件
-│   ├── api                     // 项目请求文件
+│   │    ├── fetch.js           // response.js方法配置
+│   │    ├── response.js        // http数据请求方法
+│   │    └── utils.js           // 常用方法库
+│   ├── api                  //   项目请求文件
+│   │    └── tabIcon            // 底部导航图标
 │   ├── router                  // 路由部分
-│   ├── store                   // vuex部分
-│   │    ├── index.js           // vuex配置页面
-│   │    └── stores.js          // vuex数据中心
+│   ├── store                   // redux部分
+│   │    ├── index.js           // redux配置页面
+│   │    └── stores.js          // redux数据中心
 │   ├── main.js                  //项目注册入口文件
 │   └── App.vue                  //项目入口页
 ├── package.json                // 项目配置信息
@@ -48,12 +54,10 @@
 * better-scroll：iscroll 的优化版，使移动端滑动体验更加流畅
 * LESS(Scss)：css 预编译处理器
 * ES6：ECMAScript 新一代语法，模块化、解构赋值、Promise、Class 等方法非常好用
-
 【后端】
 * Node.js：利用 Koa 起一个本地测试服务器
 * jsonp：服务端通讯。抓取 QQ音乐(移动端)数据
 * axios：服务端通讯。结合 Node.js 代理后端请求，抓取 QQ音乐(PC端)数据
-
 【自动化构建及其他工具】
 * vue-cli：Vue 脚手架工具，快速初始化项目代码
 * eslint：代码风格检查工具，规范代码书写
@@ -73,6 +77,11 @@ $ yarn run dev
 $ yarn run build
 ```
 
+
+#### iOS 微信里点击不能播放歌曲的解决
+参考:https://juejin.im/post/5a1af88f5188254a701ec230
+
+
 #### 如何参与贡献
 
 1. Fork 本仓库
@@ -80,4 +89,5 @@ $ yarn run build
 3. 提交代码
 4. 新建 Pull Request
 
-
+# 最后感谢[黄大大](https://github.com/ustbhuangyi)的帮助
+![](http://book.52react.cn/20190320120635.png)
