@@ -16,7 +16,6 @@
             </div>
           </m-slider>
         </div>
-
         <!-- 歌单推荐列表 -->
         <div class="recommend-list">
           <h1 class="list-title">热门歌单推荐</h1>
@@ -58,14 +57,14 @@ export default {
     return {
       recommends: [],
       lists     : [],
-      flag      : false
     };
   },
   created () {
+   this._getDiscList();
     setTimeout(() => {
       this._getRecommed();
     }, 1000);
-    this._getDiscList();
+ 
   },
   methods: {
     ...mapMutations({
@@ -90,7 +89,7 @@ export default {
     _getRecommed () {
       getRecommend().then(res => {
         if (res.code === ERROR_OK) {
-          console.log(res.data.slider);
+          console.log('图片长度：'+res.data.slider);
           this.recommends = res.data.slider;
         }
       });

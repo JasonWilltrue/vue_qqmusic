@@ -17,7 +17,11 @@
       <!-- 两个列表 -->
       <div class="list-wrapper" ref="listWrapper">
         <!-- 我的收藏 -->
-
+         <m-scroll ref="favoriteRef" class="list-scroll" v-if="currentIndex===0" :data="favoriteList">
+          <div class="list-inner">
+            <song-list :songs="favoriteList" @select="selectSong"></song-list>
+          </div>
+        </m-scroll>
         <!-- 最近播放 -->
         <m-scroll ref="playListRef" class="list-scroll" v-if="currentIndex===1" :data="playHistory">
           <div class="list-inner">
@@ -74,8 +78,11 @@ export default {
     },
   },
   computed: {
-      ...mapGetters(['playHistory']),
+      ...mapGetters(['playHistory', 'favoriteList']),
     noResult() {
+       if (this.currentIndex === 0) {
+        return !this.favoriteList.length
+      }
       //判断如果历史记录无数据
       if (this.currentIndex === 1) {
         return !this.playHistory.length
