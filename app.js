@@ -23,8 +23,10 @@ router.get('/api/getDiscList', function (ctx, next) {
       },
       params: ctx.query
     }).then(response=>{
-       console.log(response.data);
-       response.data;
+      //  console.log(response.data);
+      ctx.body={
+          data: JSON.stringify(response.data)
+      }
     }).catch(e => {
       console.log(e)
     })
@@ -54,6 +56,7 @@ router.get('/api/getDiscList', function (ctx, next) {
       console.log(e)
     })
   });
+  
 router.get('/api/getSongList', function (ctx, next) {
   var url = 'https://c.y.qq.com/qzone/fcg-bin/fcg_ucc_getcdinfo_byids_cp.fcg'
   axios.get(url, {
